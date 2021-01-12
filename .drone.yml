@@ -3,7 +3,7 @@ name: code-analyze-check
 type: kubernetes
 
 trigger:
-  branch: master
+  branch: main
   event:
     - push
 steps:

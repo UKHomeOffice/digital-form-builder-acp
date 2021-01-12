@@ -9,20 +9,21 @@ on:
         description: "ref"
         required: false
       sha:
-        description: 'triggered'
-        required: false
+        description: 'The SHA that triggered this build'
+        required: true
 
 jobs:
   xgovformbuilder-updated:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - run: echo ${{github.actor}}
-      - uses: fregante/setup-git-user@v1
+      - uses: actions/checkout@v2 # Checkout this repository
+      - uses: actions/checkout@v2 # Checkout the xgov repository in /xgovformbuilder
+        with: 
+          repository: XGovFormBuilder/digital-form-builder
+          path: xgovformbuilder
       - run: echo ${{ github.event.client_payload.ref }} > trigger.txt
       - run: echo ${{github.event.inputs.sha }} >> trigger.txt
-      - run: |
+      - run: | 
           git add .
-          git commit -m 'TODO extract commit details'
+          git commit -m "$(git -C xgovformbuilder log -1 --format="%b")" --author="$(git -C xgovformbuilder log -1 --format="%an <%ae>")"
           git push -u
-      

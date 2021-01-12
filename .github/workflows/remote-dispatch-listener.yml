@@ -16,6 +16,7 @@ jobs:
   xgovformbuilder-updated:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - run: echo ${{ github.event.client_payload.ref }} > trigger.txt
       - run: echo ${{github.event.inputs.sha }} >> trigger.txt
       - run: |

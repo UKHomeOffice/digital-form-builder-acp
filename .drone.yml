@@ -12,7 +12,7 @@ steps:
     image: node:12.18.4-buster
     commands:
       - node -v
-      - cat README.txt
+      - cat trigger.txt
     when:
       branch:
         - main

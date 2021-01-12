@@ -1,0 +1,20 @@
+kind: pipeline
+name: code-analyze-check
+type: kubernetes
+
+trigger:
+  branch: master
+  event:
+    - push
+steps:
+  - name: build
+    pull: if-not-exists
+    image: node:12.18.4-buster
+    commands:
+      - node -v
+      - cat README.txt
+    when:
+      branch:
+        - master
+      event:
+        - push

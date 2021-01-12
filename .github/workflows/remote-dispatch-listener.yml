@@ -1,0 +1,25 @@
+# This is a basic workflow that is manually triggered
+
+name: Job Trigger by dispatch (from xgovformbuilder)
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "ref"
+        required: false
+      sha:
+        description: 'triggered'
+        required: false
+
+jobs:
+  xgovformbuilder-updated:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo ${{ github.event.client_payload.ref }} > trigger.txt
+      - run: echo ${{github.event.inputs.sha }} >> trigger.txt
+      - run: |
+          git add .
+          git commit -m 'TODO extract commit details'
+          git push -u
+      

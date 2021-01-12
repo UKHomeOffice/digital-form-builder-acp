@@ -24,6 +24,8 @@ jobs:
       - run: echo ${{ github.event.client_payload.ref }} > trigger.txt
       - run: echo ${{github.event.inputs.sha }} >> trigger.txt
       - run: | 
+          git config user.name github-actions
+          git config user.email github-actions@github.com
           git add .
           git commit -m "$(git -C xgovformbuilder log -1 --format="%b")" --author="$(git -C xgovformbuilder log -1 --format="%an <%ae>")"
           git push -u

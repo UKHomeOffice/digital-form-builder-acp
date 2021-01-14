@@ -5,12 +5,12 @@ name: Job Trigger by dispatch (from xgovformbuilder)
 on:
   workflow_dispatch:
     inputs:
-      ref:
-        description: "ref"
-        required: false
       sha:
         description: 'The SHA that triggered this build'
-        required: true
+        required: false
+      tag:
+        required: false
+        description: 'The tag that triggered this build'
 
 jobs:
   xgovformbuilder-updated:
@@ -23,9 +23,17 @@ jobs:
           path: xgovformbuilder
       - run: echo ${{ github.event.client_payload.ref }} > trigger.txt
       - run: echo ${{github.event.inputs.sha }} >> trigger.txt
-      - run: | 
+
+      - name: Setup github user
+      - run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
+
+      name: Tag branch if triggered by a tag
+      - run: git push --atomic origin ${{ github.head_ref }} ${{github.events.inputs.tag}}
+
+      name: Commit if changes to xgovformbuilder/digital-form-builder master
+      - run: |
           git add .
-          git commit -m "$(git -C xgovformbuilder log -1 --format="%b")" --author="$(git -C xgovformbuilder log -1 --format="%an <%ae>")"
+          git commit -m "$(git -C xgovformbuilder log --format="%H %s")" --author="$(git -C xgovformbuilder log --format="%an <%ae> ${{github.event.inputs.sha}}")"
           git push -u

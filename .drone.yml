@@ -48,7 +48,7 @@ steps:
     commands:
       - export TAG_VERSION=$(cat .tags)
       - echo " TAG - $TAG_VERSION"
-      - docker build -t stp/fco-form-builder-designer:$TAG_VERSION -t stp/fco-form-builder-designer:$DRONE_COMMIT_SHA -t stp/fco-form-builder-designer:latest ./docker/designer/. --no-cache
+      - docker build -t digital-form-builder-designer:$TAG_VERSION -t digital-form-builder-designer:$DRONE_COMMIT_SHA -t digital-form-builder-designer:latest ./docker/designer/. --no-cache
     when:
       branch:
         - master

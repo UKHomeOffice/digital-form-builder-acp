@@ -22,6 +22,6 @@ steps:
       - ls -lah
     when:
       branch:
-        - main
+        - master
       event:
         - push

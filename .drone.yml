@@ -67,21 +67,21 @@ steps:
     depends_on:
       - build docker tag
   - name: ecr-login
-      pull: if-not-exists
-      image: quay.io/ukhomeofficedigital/dind-awscli:19.03.12-dind-1.18.55
-      environment:
-        AWS_ACCESS_KEY_ID:
-          from_secret: DESIGNER_AWS_ACCESS_KEY_ID
-        AWS_SECRET_ACCESS_KEY:
-          from_secret: DESIGNER_AWS_SECRET_ACCESS_KEY
-        AWS_REGION: eu-west-2
-      commands:
-        - n=0; while [ "$n" -lt 60 ] && [ ! docker stats --no-stream ]; do n=$(( n + 1 )); sleep 1; done
-        - aws ecr get-login-password --region $${AWS_REGION} | docker login --username AWS --password-stdin 340268328991.dkr.ecr.$${AWS_REGION}.amazonaws.com
-      volumes:
-        - name: dockerclientconfig
-          path: /root/.docker
-      depends_on:
-        - anchore scan
+    pull: if-not-exists
+    image: quay.io/ukhomeofficedigital/dind-awscli:19.03.12-dind-1.18.55
+    environment:
+      AWS_ACCESS_KEY_ID:
+        from_secret: DESIGNER_AWS_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY:
+        from_secret: DESIGNER_AWS_SECRET_ACCESS_KEY
+      AWS_REGION: eu-west-2
+    commands:
+      - n=0; while [ "$n" -lt 60 ] && [ ! docker stats --no-stream ]; do n=$(( n + 1 )); sleep 1; done
+      - aws ecr get-login-password --region $${AWS_REGION} | docker login --username AWS --password-stdin 340268328991.dkr.ecr.$${AWS_REGION}.amazonaws.com
+    volumes:
+      - name: dockerclientconfig
+        path: /root/.docker
+    depends_on:
+      - anchore scan
 depends_on:
   - code-analyze-check

@@ -17,7 +17,7 @@ steps:
       - export sha=$(tail -1 trigger.txt)
       - git clone https://github.com/XGovFormBuilder/digital-form-builder/
       - cd digital-form-builder
-      - git checkout sha
+      - git checkout $sha
       - git log -1
     when:
       branch:

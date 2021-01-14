@@ -17,27 +17,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2 # Checkout this repository
-#      - uses: actions/checkout@v2 # Checkout the xgov repository in /xgovformbuilder
-#        with:
-#          repository: XGovFormBuilder/digital-form-builder
-#          path: xgovformbuilder
+      - uses: actions/checkout@v2 # Checkout the xgov repository in /xgovformbuilder
+        with:
+          repository: XGovFormBuilder/digital-form-builder
+          path: xgovformbuilder
       - run: echo ${{ github.event.client_payload.ref }} > trigger.txt
       - run: echo ${{github.event.inputs.sha }} >> trigger.txt
 
-#      - name: Setup github user
-#        run: |
-#          git config user.name github-actions
-#          git config user.email github-actions@github.com
+      - name: Setup github user
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
 
       - name: Tag branch if triggered by a tag
         if: ${{!!github.event.inputs.tag}}
-        run: echo "dummy tag ${{github.event.inputs.tag}}"
-#        run: git push --atomic origin ${{ github.head_ref }} ${{github.events.inputs.tag}}
+        # run: echo "dummy tag ${{github.event.inputs.tag}}"
+        run: git push --atomic origin ${{ github.head_ref }} ${{github.events.inputs.tag}}
 
       - name: Commit if changes to xgovformbuilder/digital-form-builder master
         if: ${{!!github.event.inputs.sha}}
-        run: echo "dummy tag ${{github.event.inputs.sha}}"
-#        run: |
-#          git add .
-#          git commit -m "$(git -C xgovformbuilder log --format="%H %s")" --author="$(git -C xgovformbuilder log --format="%an <%ae> ${{github.event.inputs.sha}}")"
-#          git push -u
+        # run: echo "dummy tag ${{github.event.inputs.sha}}"
+        run: |
+          git add .
+          git commit -m "$(git -C xgovformbuilder log --format="%H %s")" --author="$(git -C xgovformbuilder log --format="%an <%ae> ${{github.event.inputs.sha}}")"
+          git push -u

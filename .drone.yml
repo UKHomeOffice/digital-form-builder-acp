@@ -14,13 +14,11 @@ steps:
       - node -v
       - echo $(git log -1)
       - cat trigger.txt
-      - curl https://github.com/XGovFormBuilder/digital-form-builder/tree/master/designer/package.json -o designer.json
-      - export DESIGNER_VERSION=$(node -e "console.log(require('./designer.json').version);")
-      - echo $DESIGNER_VERSION
-      - curl https://github.com/XGovFormBuilder/digital-form-builder/tree/master/runner/package.json -o runner.json
-      - export RUNNER_VERSION=$(node -e "console.log(require('./runner.json').version);")
-      - echo $RUNNER_VERSION
-      - ls -lah
+      - export sha=$(tail -1 trigger.txt)
+      - git clone https://github.com/XGovFormBuilder/digital-form-builder/
+      - cd digital-form-builder
+      - git checkout sha
+      - git log -1
     when:
       branch:
         - master

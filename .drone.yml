@@ -54,7 +54,7 @@ steps:
     commands:
       - sleep 5
       - n=0; while [ "$n" -lt 120 ] && [ ! docker stats --no-stream ]; do n=$(( n + 1 )); sleep 1; done
-      - "export TAG_VERSION=$(cat ./designer/package.json | grep version | head -1 | cut -d : -f2 | cut -d , -f1 | tr -d '\"' | tr -d ' ')"
+      - export TAG_VERSION=$(git log -1 ../trigger.txt)"
       - echo "$${TAG_VERSION}" > .tags
     volumes:
       - name: dockerclientconfig
@@ -63,7 +63,7 @@ steps:
     pull: if-not-exists
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
     commands:
-      - "export TAG_VERSION=$(cat .tags)"
+      - export TAG_VERSION=$(cat .tags)
       - echo " TAG - $TAG_VERSION"
       - docker build -t stp/fco-form-builder-designer:$TAG_VERSION -t stp/fco-form-builder-designer:$DRONE_COMMIT_SHA -t stp/fco-form-builder-designer:latest ./docker/designer/. --no-cache
     when:

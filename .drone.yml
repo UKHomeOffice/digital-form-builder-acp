@@ -12,6 +12,7 @@ steps:
     image: node:12.18.4-buster
     commands:
       - node -v
+      - echo $(git log -1)
       - cat trigger.txt
       - curl https://github.com/XGovFormBuilder/digital-form-builder/tree/master/designer/package.json -o designer.json
       - export DESIGNER_VERSION=$(node -e "console.log(require('./designer.json').version);")

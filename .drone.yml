@@ -52,9 +52,7 @@ steps:
     pull: if-not-exists
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
     commands:
-      - sleep 5
-      - n=0; while [ "$n" -lt 120 ] && [ ! docker stats --no-stream ]; do n=$(( n + 1 )); sleep 1; done
-      - export TAG_VERSION=$(git log -1 ../trigger.txt)"
+      - export TAG_VERSION=$(git log -1 ../trigger.txt)
       - echo "$${TAG_VERSION}" > .tags
     volumes:
       - name: dockerclientconfig
@@ -81,7 +79,6 @@ steps:
     pull: always
     environment:
       IMAGE_NAME: stp/fco-form-builder-designer:${DRONE_COMMIT_SHA}
-      WHITELIST: CVE-2020-7788,CVE-2020-7754,CVE-2020-7774,CVE-2017-18589,CVE-2020-15133,CVE-2020-7788,CVE-2020-7774
     depends_on:
       - build docker tag
 depends_on:

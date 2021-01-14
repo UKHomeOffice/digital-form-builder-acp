@@ -30,10 +30,14 @@ jobs:
           git config user.email github-actions@github.com
 
       - name: Tag branch if triggered by a tag
-        run: git push --atomic origin ${{ github.head_ref }} ${{github.events.inputs.tag}}
+        if: ${{ matrix.tag }}
+        run: echo "dummy tag ${{github.events.inputs.tag}}"
+#        run: git push --atomic origin ${{ github.head_ref }} ${{github.events.inputs.tag}}
 
       - name: Commit if changes to xgovformbuilder/digital-form-builder master
-        run: |
-          git add .
-          git commit -m "$(git -C xgovformbuilder log --format="%H %s")" --author="$(git -C xgovformbuilder log --format="%an <%ae> ${{github.event.inputs.sha}}")"
-          git push -u
+        if: ${{ matrix.sha }}
+        run: echo "dummy tag ${{github.events.inputs.sha}}"
+#        run: |
+#          git add .
+#          git commit -m "$(git -C xgovformbuilder log --format="%H %s")" --author="$(git -C xgovformbuilder log --format="%an <%ae> ${{github.event.inputs.sha}}")"
+#          git push -u

@@ -30,14 +30,14 @@ jobs:
           git config user.email github-actions@github.com
 
       - name: Tag branch if triggered by a tag
-        if: ${{github.event.inputs.tag != false }}
+        if: ${{github.event.inputs.tag != false || github.event.inputs.tag != 'false' }}
         #        run: echo "dummy tag ${{github.event.inputs.tag}}"
         run: |
           git tag ${{github.event.inputs.tag}}
           git push --tags origin HEAD
 
       - name: Commit if changes to xgovformbuilder/digital-form-builder master
-        if: ${{github.event.inputs.tag == false}}
+        if: ${{github.event.inputs.tag == false || github.event.inputs.tag == 'false'}}
         #        run: echo "dummy sha ${{github.event.inputs.sha}}"
         run: |
           git add .

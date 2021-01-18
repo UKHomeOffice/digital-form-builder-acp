@@ -21,9 +21,10 @@ jobs:
         with:
           repository: XGovFormBuilder/digital-form-builder
           path: xgovformbuilder
-      - run: echo ${{ github.event.client_payload.ref }} > trigger.txt
-      - run: echo ${{github.event.inputs.sha }} >> trigger.txt
-
+      - run: |
+          echo "Ref: ${{ github.event.client_payload.ref }}" > trigger.txt
+          echo "Sha: ${{github.event.inputs.sha }}" >> trigger.txt
+          echo "Tag: ${{github.event.inputs.tag }}" >> trigger.txt
       - name: Setup github user
         run: |
           git config user.name github-actions

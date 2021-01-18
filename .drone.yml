@@ -36,6 +36,7 @@ steps:
     pull: if-not-exists
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
     commands:
+      - echo "Current SHA is $sha"
       - export TAG_VERSION=$(tail -1 trigger.txt)
       - echo "$${TAG_VERSION}" > .tags
     volumes:

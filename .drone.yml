@@ -7,13 +7,13 @@ trigger:
   event:
     - push
 steps:
-  - name: build
+  - name: extact meta data for XGovFormBuilder
     pull: if-not-exists
     image: node:12.18.4-buster
     commands:
-      - node -v
       - cat trigger.txt
       - export sha=$(tail -1 trigger.txt)
+      - echo "Current SHA is $sha"
       - git clone https://github.com/XGovFormBuilder/digital-form-builder/
       - cd digital-form-builder
       - git checkout $sha

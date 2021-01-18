@@ -6,6 +6,7 @@ trigger:
   branch: main
   event:
     - push
+    - tag
 steps:
   - name: extact meta data for XGovFormBuilder
     pull: if-not-exists

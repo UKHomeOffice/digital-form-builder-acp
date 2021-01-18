@@ -13,8 +13,89 @@ steps:
     commands:
       - node -v
       - cat trigger.txt
+      - export sha=$(tail -1 trigger.txt)
+      - git clone https://github.com/XGovFormBuilder/digital-form-builder/
+      - cd digital-form-builder
+      - git checkout $sha
+      - git log -1
     when:
       branch:
         - main
       event:
         - push
+---
+kind: pipeline
+name: designer
+type: kubernetes
+trigger:
+  branch: main
+  event:
+    - push
+steps:
+  - name: setup tags
+    pull: if-not-exists
+    image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
+    commands:
+      - export TAG_VERSION=$(tail -1 trigger.txt)
+      - echo "$${TAG_VERSION}" > .tags
+    volumes:
+      - name: dockerclientconfig
+        path: /root/.docker
+  - name: build docker tag
+    pull: if-not-exists
+    image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
+    commands:
+      - export TAG_VERSION=$(cat .tags)
+      - echo " TAG - $TAG_VERSION"
+      - docker build -t digital-form-builder-designer:$TAG_VERSION -t digital-form-builder-designer:$DRONE_COMMIT_SHA -t digital-form-builder-designer:latest ./docker/designer/. --no-cache
+    when:
+      branch:
+        - main
+      event:
+        - push
+    volumes:
+      - name: dockerclientconfig
+        path: /root/.docker
+    depends_on:
+      - setup tags
+  - name: anchore scan
+    image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/anchore-submission:latest
+    pull: always
+    environment:
+      IMAGE_NAME: stp/fco-form-builder-designer:${DRONE_COMMIT_SHA}
+    depends_on:
+      - build docker tag
+  - name: ecr-login
+    pull: if-not-exists
+    image: quay.io/ukhomeofficedigital/dind-awscli:19.03.12-dind-1.18.55
+    environment:
+      AWS_ACCESS_KEY_ID:
+        from_secret: DESIGNER_AWS_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY:
+        from_secret: DESIGNER_AWS_SECRET_ACCESS_KEY
+      AWS_REGION: eu-west-2
+    commands:
+      - n=0; while [ "$n" -lt 60 ] && [ ! docker stats --no-stream ]; do n=$(( n + 1 )); sleep 1; done
+      - aws ecr get-login-password --region $${AWS_REGION} | docker login --username AWS --password-stdin 340268328991.dkr.ecr.$${AWS_REGION}.amazonaws.com
+    volumes:
+      - name: dockerclientconfig
+        path: /root/.docker
+    depends_on:
+      - anchore scan
+depends_on:
+  - code-analyze-check
+
+
+services:
+  - name: docker
+    image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
+  
+  - name: anchore-submission-server
+    image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/anchore-submission:latest
+    pull: always
+    commands:
+      - /run.sh server
+
+volumes:
+  - name: dockerclientconfig
+    temp: {}

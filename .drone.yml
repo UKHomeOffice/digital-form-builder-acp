@@ -36,7 +36,7 @@ steps:
     pull: if-not-exists
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
     commands:
-      - echo "Current SHA is $sha"
+      - echo "Current SHA is $${BRANCH} $${DRONE_COMMIT} $${DRONE_COMMIT_AFTER} $${DRONE_COMMIT_AUTHOR} $${DRONE_COMMIT_AUTHOR_AVATAR} $${DRONE_COMMIT_AUTHOR_EMAIL} $${DRONE_COMMIT_AUTHOR_NAME}"
       - export TAG_VERSION=$(tail -1 trigger.txt)
       - echo "$${TAG_VERSION}" > .tags
     volumes:

@@ -12,16 +12,12 @@ steps:
     pull: if-not-exists
     image: alpine/git
     commands:
-      - cat trigger.txt
-      - export sha=$(tail -1 trigger.txt)
-      - echo "Current SHA is $sha from trigger"
       - git clone https://github.com/XGovFormBuilder/digital-form-builder/
       - cd digital-form-builder
       - git log -1
       - export LAST_COMMIT_AUTHOR=$(echo $(git log -1 --pretty=format:"%an"))
       - export LAST_COMMIT_AUTHOR_EMAIL=$(echo $(git log -1 --pretty=format:"%ae"))
       - export LAST_COMMIT_MESSAGE=$(echo $(git log -1 --pretty='%s%d [%an]'))
-      - echo "XGOV_TAG=1.0.0" > .env
       - echo "Processing $LAST_COMMIT_MESSAGE $LAST_COMMIT_AUTHOR $LAST_COMMIT_AUTHOR_EMAIL"
       - git describe --tags
       - echo "Drone Env :$${DRONE_COMMIT_REF} $${DRONE_COMMIT_SHA} $${DRONE_COMMIT_LINK} $${DRONE_COMMIT_MESSAGE} $${DRONE_COMMIT_AUTHOR} $${DRONE_COMMIT_AUTHOR_EMAIL} $${DRONE_COMMIT_AUTHOR_NAME}"

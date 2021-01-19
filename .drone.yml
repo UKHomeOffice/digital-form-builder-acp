@@ -10,7 +10,7 @@ trigger:
 steps:
   - name: extact meta data for XGovFormBuilder
     pull: if-not-exists
-    image: node:12.18.4-buster
+    image: alpine/git
     commands:
       - cat trigger.txt
       - export sha=$(tail -1 trigger.txt)

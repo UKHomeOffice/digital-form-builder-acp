@@ -24,6 +24,7 @@ steps:
         - main
       event:
         - push
+        - tag
 ---
 kind: pipeline
 name: designer

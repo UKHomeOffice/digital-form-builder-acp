@@ -68,10 +68,9 @@ steps:
     pull: if-not-exists
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
     commands:
-      - echo $${XGOV_TAG}
       - export TAG_VERSION=$(cat .tags)
       - echo " TAG - $TAG_VERSION"
-      - docker build -t digital-form-builder-designer:$TAG_VERSION -t digital-form-builder-designer:$DRONE_COMMIT_SHA -t digital-form-builder-designer:latest ./docker/designer/. --no-cache -e BASE_IMAGE_TAG=$${XGOV_TAG}
+      - docker build --build-arg BASE_IMAGE_TAG=$${TAG_VERSION} -t digital-form-builder-designer:$TAG_VERSION -t digital-form-builder-designer:$DRONE_COMMIT_SHA -t digital-form-builder-designer:latest ./docker/designer/. --no-cache
     volumes:
       - name: dockerclientconfig
         path: /root/.docker

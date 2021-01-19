@@ -17,9 +17,9 @@ steps:
       - echo "Current SHA is $sha from trigger"
       - git clone https://github.com/XGovFormBuilder/digital-form-builder/
       - cd digital-form-builder
-      - git branch --show-current
       - git log -1
       - git describe --tags
+      - echo "Drone Env :$${DRONE_COMMIT_REF} $${DRONE_COMMIT_SHA} $${DRONE_COMMIT_LINK} $${DRONE_COMMIT_MESSAGE} $${DRONE_COMMIT_AUTHOR} $${DRONE_COMMIT_AUTHOR_EMAIL} $${DRONE_COMMIT_AUTHOR_NAME}"
     when:
       branch:
         - main

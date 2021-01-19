@@ -14,11 +14,12 @@ steps:
     commands:
       - cat trigger.txt
       - export sha=$(tail -1 trigger.txt)
-      - echo "Current SHA is $sha"
+      - echo "Current SHA is $sha from trigger"
       - git clone https://github.com/XGovFormBuilder/digital-form-builder/
       - cd digital-form-builder
-      - git checkout $sha
+      - git checkout main
       - git log -1
+      - git describe --tags
     when:
       branch:
         - main

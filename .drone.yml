@@ -56,10 +56,10 @@ steps:
     pull: if-not-exists
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
     commands:
-      #- [ -f .env ]; then source .env; done
+      - source .env
       - env
       - echo "Current SHA is $${BRANCH} $${DRONE_COMMIT} $${DRONE_COMMIT_AFTER} $${DRONE_COMMIT_AUTHOR} $${DRONE_COMMIT_AUTHOR_AVATAR} $${DRONE_COMMIT_AUTHOR_EMAIL} $${DRONE_COMMIT_AUTHOR_NAME}"
-      - export TAG_VERSION=$(tail -1 trigger.txt)
+      - echo "Current XGOV tag $${XGOV_TAG}"
       - echo $${XGOV_TAG} > .tags
     volumes:
       - name: dockerclientconfig
@@ -68,14 +68,10 @@ steps:
     pull: if-not-exists
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
     commands:
+      - echo $${XGOV_TAG}
       - export TAG_VERSION=$(cat .tags)
       - echo " TAG - $TAG_VERSION"
-      - docker build -t digital-form-builder-designer:$TAG_VERSION -t digital-form-builder-designer:$DRONE_COMMIT_SHA -t digital-form-builder-designer:latest ./docker/designer/. --no-cache
-    when:
-      branch:
-        - main
-      event:
-        - push
+      - docker build -t digital-form-builder-designer:$TAG_VERSION -t digital-form-builder-designer:$DRONE_COMMIT_SHA -t digital-form-builder-designer:latest ./docker/designer/. --no-cache -e BASE_IMAGE_TAG=$${XGOV_TAG}
     volumes:
       - name: dockerclientconfig
         path: /root/.docker

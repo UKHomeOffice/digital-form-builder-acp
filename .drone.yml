@@ -61,8 +61,7 @@ steps:
       - env
       - echo "Current SHA is $${BRANCH} $${DRONE_COMMIT} $${DRONE_COMMIT_AFTER} $${DRONE_COMMIT_AUTHOR} $${DRONE_COMMIT_AUTHOR_AVATAR} $${DRONE_COMMIT_AUTHOR_EMAIL} $${DRONE_COMMIT_AUTHOR_NAME}"
       - export TAG_VERSION=$(tail -1 trigger.txt)
-      - echo $${XGOV_TAG}
-      - echo "$${TAG_VERSION}" > .tags
+      - echo $${XGOV_TAG} > .tags
     volumes:
       - name: dockerclientconfig
         path: /root/.docker

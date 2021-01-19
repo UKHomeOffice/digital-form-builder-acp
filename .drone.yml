@@ -25,10 +25,10 @@ steps:
       - git describe --tags
       - echo "Drone Env :$${DRONE_COMMIT_REF} $${DRONE_COMMIT_SHA} $${DRONE_COMMIT_LINK} $${DRONE_COMMIT_MESSAGE} $${DRONE_COMMIT_AUTHOR} $${DRONE_COMMIT_AUTHOR_EMAIL} $${DRONE_COMMIT_AUTHOR_NAME}"
     environment:
-      XGOV_AUTHOR:$${LAST_COMMIT_AUTHOR}
-      XGOV_AUTHOR_EMAIL:$${LAST_COMMIT_AUTHOR_EMAIL}
-      XGOV_COMMIT_MESSAGE:$${LAST_COMMIT_MESSAGE}
-      XGOV_TAG:1.0.0
+      XGOV_AUTHOR: $${LAST_COMMIT_AUTHOR}
+      XGOV_AUTHOR_EMAIL: $${LAST_COMMIT_AUTHOR_EMAIL}
+      XGOV_COMMIT_MESSAGE: $${LAST_COMMIT_MESSAGE}
+      XGOV_TAG: 1.0.0
     volumes:
       - name: dockerclientconfig
         path: /root/.docker

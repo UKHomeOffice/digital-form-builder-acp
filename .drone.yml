@@ -35,9 +35,6 @@ steps:
       event:
         - push
         - tag
-volumes:
-  - name: dockerclientconfig
-    temp: {}
 ---
 kind: pipeline
 name: designer

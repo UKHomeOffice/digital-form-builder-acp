@@ -66,6 +66,7 @@ steps:
     commands:
       - export TAG_VERSION=$(cat .tags)
       - echo " TAG - $TAG_VERSION"
+      - export TAG_VERSION=latest
       - docker build --build-arg BASE_IMAGE_TAG=$${TAG_VERSION} -t digital-form-builder-designer:$DRONE_COMMIT_SHA -t digital-form-builder-designer:latest designer/. --no-cache
     volumes:
       - name: dockerclientconfig

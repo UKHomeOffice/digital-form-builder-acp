@@ -43,6 +43,4 @@ jobs:
         if: ${{github.event.inputs.tag == false || github.event.inputs.tag == 'false'}}
         #        run: echo "dummy sha ${{github.event.inputs.sha}}"
         run: |
-        # git add .
-        # git commit -m "$(git -C xgovformbuilder log --format="%H %s" ${{github.event.inputs.sha}})" --author="$(git -C xgovformbuilder log --format="%an <%ae>" ${{github.event.inputs.sha}})"
           git push -u

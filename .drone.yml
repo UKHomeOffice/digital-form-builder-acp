@@ -77,10 +77,9 @@ steps:
     pull: if-not-exists
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
     commands:
+      - echo "Tag from env $${XGOV_TAG}"
       - export TAG_VERSION=$(cat .tags)
       - echo " TAG - $TAG_VERSION"
-      - manifest=$(curl -X GET https://docker.pkg.github.com/v2/xgovformbuilder/digital-form-builder-runner/manifests/$GITHUB_SHA -u $GITHUB_ACTOR:${{ secrets.GITHUB_TOKEN }} | jq '.')
-      - echo $manifest
       - export TAG_VERSION=latest
       - docker build --build-arg BASE_IMAGE_TAG=$${TAG_VERSION} -t digital-form-builder-designer:$${DRONE_COMMIT_SHA} -t digital-form-builder-designer:latest designer/. --no-cache
     volumes:

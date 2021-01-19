@@ -17,7 +17,7 @@ steps:
       - echo "Current SHA is $sha from trigger"
       - git clone https://github.com/XGovFormBuilder/digital-form-builder/
       - cd digital-form-builder
-      - git checkout main
+      - git branch --show-current
       - git log -1
       - git describe --tags
     when:

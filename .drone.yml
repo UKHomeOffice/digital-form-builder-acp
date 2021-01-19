@@ -77,7 +77,6 @@ steps:
     pull: if-not-exists
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
     commands:
-      - echo "Tag from env $${XGOV_TAG}"
       - export TAG_VERSION=$(cat .tags)
       - echo " TAG - $TAG_VERSION"
       - export TAG_VERSION=latest
@@ -92,6 +91,9 @@ steps:
     pull: always
     environment:
       IMAGE_NAME: digital-form-builder-designer:$DRONE_COMMIT_SHA
+    volumes:
+      - name: dockerclientconfig
+        path: /root/.docker
     depends_on:
       - build docker tag
 

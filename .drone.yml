@@ -21,8 +21,7 @@ steps:
       - export LAST_COMMIT_AUTHOR=$(echo $(git log -1 --pretty=format:"%an"))
       - export LAST_COMMIT_AUTHOR_EMAIL=$(echo $(git log -1 --pretty=format:"%ae"))
       - export LAST_COMMIT_MESSAGE=$(echo $(git log -1 --pretty='%s%d [%an]'))
-      - echo XGOV_TAG=1.0.0 > .env
-      - echo 1.0.0 > .tags
+      - echo "XGOV_TAG=1.0.0" > .env
       - echo "Processing $LAST_COMMIT_MESSAGE $LAST_COMMIT_AUTHOR $LAST_COMMIT_AUTHOR_EMAIL"
       - git describe --tags
       - echo "Drone Env :$${DRONE_COMMIT_REF} $${DRONE_COMMIT_SHA} $${DRONE_COMMIT_LINK} $${DRONE_COMMIT_MESSAGE} $${DRONE_COMMIT_AUTHOR} $${DRONE_COMMIT_AUTHOR_EMAIL} $${DRONE_COMMIT_AUTHOR_NAME}"
@@ -57,7 +56,7 @@ steps:
     pull: if-not-exists
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
     commands:
-      - [ -f .env ]; then source .env; done
+      #- [ -f .env ]; then source .env; done
       - env
       - echo "Current SHA is $${BRANCH} $${DRONE_COMMIT} $${DRONE_COMMIT_AFTER} $${DRONE_COMMIT_AUTHOR} $${DRONE_COMMIT_AUTHOR_AVATAR} $${DRONE_COMMIT_AUTHOR_EMAIL} $${DRONE_COMMIT_AUTHOR_NAME}"
       - export TAG_VERSION=$(tail -1 trigger.txt)

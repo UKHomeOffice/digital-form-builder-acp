@@ -12,7 +12,7 @@ steps:
     image: alpine/git
     commands:
       - bin/env.sh
-      - info "XXXX"
+      - source .env && echo "XXXX ${XGOV_SHA}"
       - git clone https://github.com/XGovFormBuilder/digital-form-builder/
       - cd digital-form-builder
       - git checkout ${XGOV_SHA}
@@ -20,6 +20,7 @@ steps:
     pull: if-not-exists
     image: node:12.18.4-buster
     commands:
+      - exit 1
       - cd digital-form-builder
       - yarn
       - yarn build:dependencies

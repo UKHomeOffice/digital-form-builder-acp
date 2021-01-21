@@ -14,7 +14,7 @@ steps:
       - bin/env.sh
       - git clone https://github.com/XGovFormBuilder/digital-form-builder/
       - cd digital-form-builder
-      - echo "Current sha- ${XGOV_SHA}"
+      - echo "BASE_IMAGE_APP_SHA- $${BASE_IMAGE_APP_SHA}"
       - git checkout ${XGOV_SHA}
   - name: dev-run-tests-with-coverage
     pull: if-not-exists

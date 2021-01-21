@@ -8,14 +8,19 @@ trigger:
     - push
     - tag
 steps:
-  - name: checkout xgov
+  - name: extact meta data for XGovFormBuilder
+    pull: if-not-exists
     image: alpine/git
     commands:
       - git clone https://github.com/XGovFormBuilder/digital-form-builder/
       - cd digital-form-builder
-      - git checkout $${XGOV_SHA}
-    
-
+      - git log -1
+    when:
+      branch:
+        - main
+      event:
+        - push
+        - tag
 ---
 kind: pipeline
 name: designer

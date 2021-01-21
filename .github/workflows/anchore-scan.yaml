@@ -13,10 +13,14 @@ jobs:
         with:
           image: "ghcr.io/xgovformbuilder/digital-form-builder-runner:latest"
           acs-report-enable: true
-      - name: upload Anchore scan SARIF report
-        uses: github/codeql-action/upload-sarif@v1
-        with:
-          sarif_file: ${{ steps.scan.outputs.sarif }}
+          fail-build: true
+          severity-cutoff: critical
+      - name: Upload artifact
+          uses: actions/upload-artifact@v1.0.0
+          if: always()
+          with:
+            name: AnchoreReports-Runner
+            path: ./anchore-reports/
   designer-scan:
     runs-on: ubuntu-latest
     steps:
@@ -25,7 +29,11 @@ jobs:
         with:
           image: "ghcr.io/xgovformbuilder/digital-form-builder-designer:latest"
           acs-report-enable: true
-      - name: upload Anchore scan SARIF report
-        uses: github/codeql-action/upload-sarif@v1
-        with:
-          sarif_file: ${{ steps.scan.outputs.sarif }}
+          fail-build: true
+          severity-cutoff: critical
+      - name: Upload artifact
+          uses: actions/upload-artifact@v1.0.0
+          if: always()
+          with:
+            name: AnchoreReports-Designer
+            path: ./anchore-reports/

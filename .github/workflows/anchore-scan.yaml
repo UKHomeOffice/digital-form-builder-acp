@@ -17,6 +17,7 @@ jobs:
           debug: true
           acs-report-enable: true
       - name: Inspect Generated SARIF
+        if: ${{ success() || failure() }}
         run: cat ${{ steps.scan.outputs.sarif }}
       - name: Upload artifact
         uses: actions/upload-artifact@v1.0.0
@@ -36,6 +37,7 @@ jobs:
           debug: true
           acs-report-enable: true
       - name: Inspect Generated SARIF
+        if: ${{ success() || failure() }}
         run: cat ${{ steps.scan.outputs.sarif }}
       - name: Upload artifact
         uses: actions/upload-artifact@v1.0.0

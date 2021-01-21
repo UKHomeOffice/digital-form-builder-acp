@@ -6,7 +6,11 @@ on:
     uses: anchore/scan-action@v2
     with:
       image: "ghcr.io/xgovformbuilder/digital-form-builder-runner:latest"
+      fail-build: true
+      severity-cutoff: critical
   - name: Scan image
     uses: anchore/scan-action@v2
     with:
       image: "ghcr.io/xgovformbuilder/digital-form-builder-designer:latest"
+      fail-build: true
+      severity-cutoff: critical

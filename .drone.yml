@@ -14,15 +14,6 @@ steps:
       - git clone https://github.com/XGovFormBuilder/digital-form-builder/
       - cd digital-form-builder
       - git checkout $${XGOV_SHA}
-  - name: sonar_scan
-    pull: if-not-exists
-    image: quay.digital.homeoffice.gov.uk/ukhomeofficedigital/sonar-scanner-node:6a03c77c7e1bad005893cdcc9cd3d99479b79d5c
-    commands:
-      - ls *
-
-volumes:
-  - name: xgov
-    temp: {}
     
 
 ---

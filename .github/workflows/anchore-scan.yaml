@@ -12,8 +12,7 @@ jobs:
         uses: anchore/scan-action@v2
         with:
           image: "ghcr.io/xgovformbuilder/digital-form-builder-runner:latest"
-          fail-build: true
-          severity-cutoff: critical
+          acs-report-enable: true
       - name: upload Anchore scan SARIF report
         uses: github/codeql-action/upload-sarif@v1
         with:
@@ -25,8 +24,7 @@ jobs:
         uses: anchore/scan-action@v2
         with:
           image: "ghcr.io/xgovformbuilder/digital-form-builder-designer:latest"
-          fail-build: true
-          severity-cutoff: critical
+          acs-report-enable: true
       - name: upload Anchore scan SARIF report
         uses: github/codeql-action/upload-sarif@v1
         with:

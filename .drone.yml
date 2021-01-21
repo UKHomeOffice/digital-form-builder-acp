@@ -12,7 +12,8 @@ steps:
     image: alpine/git
     commands:
       - bin/env.sh
-      - source .env && echo "XXXX ${XGOV_SHA}"
+      - source .env && echo "XXXX $${XGOV_SHA}"
+      - env
       - git clone https://github.com/XGovFormBuilder/digital-form-builder/
       - cd digital-form-builder
       - git checkout ${XGOV_SHA}

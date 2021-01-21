@@ -45,5 +45,7 @@ jobs:
       - uses: anchore/scan-action@v2
         with:
           image: "ghcr.io/xgovformbuilder/digital-form-builder-designer:latest"
+      - name: grype scan JSON results-debug
+        run : ls -lah
       - name: grype scan JSON results
         run: for j in `ls ./anchore-reports/*.json`; do echo "---- ${j} ----"; cat ${j}; echo; done

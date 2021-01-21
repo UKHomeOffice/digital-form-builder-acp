@@ -25,9 +25,9 @@ steps:
       - cp sonar/model-sonar-project.properties /xgov/digital-form-builder/model/sonar-project.properties
       - cp sonar/runner-sonar-project.properties /xgov/digital-form-builder/runner/sonar-project.properties
       - sonar-scanner -Dsonar.projectVersion=${DRONE_BUILD_NUMBER} -Dsonar.projectBaseDir=/xgov/digital-form-builder/ -Dsonar.projectKey=digital-form-builder
-  volumes:
-    - name: xgov
-    path: /xgov
+    volumes:
+      - name: xgov
+      path: /xgov
 volumes:
   - name: xgov
     temp: {}

@@ -1,4 +1,32 @@
 kind: pipeline
+name: setup
+type: kubernetes
+
+trigger:
+  branch: main
+  event:
+    - push
+    - tag
+steps:
+  - name: preparte enviroment variables
+    pull: if-not-exists
+    image: alpine/git
+    commands:
+      - git clone https://github.com/XGovFormBuilder/digital-form-builder/
+      - cd digital-form-builder
+      - echo XGOV_LAST_COMMIT_AUTHOR=$(echo $(git log -1 --pretty=format:"%an")) > .xgov
+      - echo XGOV_LAST_COMMIT_AUTHOR_EMAIL=$(echo $(git log -1 --pretty=format:"%ae")) >> .xgov
+      - echo XGOV_LAST_COMMIT_MESSAGE=$(echo $(git log -1 --pretty='%s%d [%an]')) >> .xgov
+      - source .xgov
+      - echo "Processing $XGOV_LAST_COMMIT_MESSAGE $XGOV_LAST_COMMIT_AUTHOR $XGOV_LAST_COMMIT_AUTHOR_EMAIL"
+    when:
+      branch:
+        - main
+      event:
+        - push
+        - tag
+---
+kind: pipeline
 name: code-analyze-check
 type: kubernetes
 
@@ -8,25 +36,25 @@ trigger:
     - push
     - tag
 steps:
-  - name: extact meta data for XGovFormBuilder
+  - name: sonar_scan
     pull: if-not-exists
-    image: alpine/git
+    image: quay.digital.homeoffice.gov.uk/ukhomeofficedigital/sonar-scanner-node:6a03c77c7e1bad005893cdcc9cd3d99479b79d5c
     commands:
       - git clone https://github.com/XGovFormBuilder/digital-form-builder/
       - cd digital-form-builder
-      - export LAST_COMMIT_AUTHOR=$(echo $(git log -1 --pretty=format:"%an"))
-      - export LAST_COMMIT_AUTHOR_EMAIL=$(echo $(git log -1 --pretty=format:"%ae"))
-      - export LAST_COMMIT_MESSAGE=$(echo $(git log -1 --pretty='%s%d [%an]'))
-      - echo "Processing $LAST_COMMIT_MESSAGE $LAST_COMMIT_AUTHOR $LAST_COMMIT_AUTHOR_EMAIL"
-    volumes:
-      - name: dockerclientconfig
-        path: /root/.docker
+      - cp sonar/sonar-project.properties digital-form-builder/
+      - cp sonar/designer-sonar-project.properties digital-form-builder/designer/sonar-project.properties
+      - cp sonar/model-sonar-project.properties digital-form-builder/model/sonar-project.properties
+      - cp sonar/runner-sonar-project.properties digital-form-builder/runner/sonar-project.properties
+      - sonar-scanner -Dsonar.projectVersion=${DRONE_BUILD_NUMBER} -Dsonar.projectBaseDir=digital-form-builder -Dsonar.projectKey=digital-form-builder
     when:
       branch:
         - main
       event:
         - push
         - tag
+depends_on:
+  - setup
 ---
 kind: pipeline
 name: designer

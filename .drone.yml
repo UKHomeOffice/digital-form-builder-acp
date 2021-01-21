@@ -1,32 +1,4 @@
 kind: pipeline
-name: setup
-type: kubernetes
-
-trigger:
-  branch: main
-  event:
-    - push
-    - tag
-steps:
-  - name: preparte enviroment variables
-    pull: if-not-exists
-    image: alpine/git
-    commands:
-      - git clone https://github.com/XGovFormBuilder/digital-form-builder/
-      - cd digital-form-builder
-      - echo XGOV_LAST_COMMIT_AUTHOR=$(echo $(git log -1 --pretty=format:"%an")) > .xgov
-      - echo XGOV_LAST_COMMIT_AUTHOR_EMAIL=$(echo $(git log -1 --pretty=format:"%ae")) >> .xgov
-      - echo XGOV_LAST_COMMIT_MESSAGE=$(echo $(git log -1 --pretty='%s%d [%an]')) >> .xgov
-      - source .xgov
-      - echo "Processing $XGOV_LAST_COMMIT_MESSAGE $XGOV_LAST_COMMIT_AUTHOR $XGOV_LAST_COMMIT_AUTHOR_EMAIL"
-    when:
-      branch:
-        - main
-      event:
-        - push
-        - tag
----
-kind: pipeline
 name: code-analyze-check
 type: kubernetes
 
@@ -42,6 +14,8 @@ steps:
     commands:
       - git clone https://github.com/XGovFormBuilder/digital-form-builder/
       - cd digital-form-builder
+      - git checkout $${XGOV_SHA}
+      - cd ..
       - cp sonar/sonar-project.properties digital-form-builder/
       - cp sonar/designer-sonar-project.properties digital-form-builder/designer/sonar-project.properties
       - cp sonar/model-sonar-project.properties digital-form-builder/model/sonar-project.properties
@@ -53,8 +27,6 @@ steps:
       event:
         - push
         - tag
-depends_on:
-  - setup
 ---
 kind: pipeline
 name: designer

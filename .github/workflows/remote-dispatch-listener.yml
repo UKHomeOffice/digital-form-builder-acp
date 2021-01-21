@@ -29,7 +29,14 @@ jobs:
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
-
+      - name: Scan Designer image
+        uses: anchore/scan-action@v2
+        with:
+          image: "ghcr.io/xgovformbuilder/digital-form-builder-designer:${{github.event.inputs.tag }}"
+      - name: Scan Runner image
+        uses: anchore/scan-action@v2
+        with:
+          image: "ghcr.io/xgovformbuilder/digital-form-builder-runner:${{github.event.inputs.tag }}"
       - name: Tag branch if triggered by a tag
         if: ${{github.event.inputs.tag != false || github.event.inputs.tag != 'false' }}
         #        run: echo "dummy tag ${{github.event.inputs.tag}}"

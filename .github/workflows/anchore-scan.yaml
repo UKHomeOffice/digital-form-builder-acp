@@ -12,9 +12,6 @@ jobs:
         uses: anchore/scan-action@v2
         with:
           image: "ghcr.io/xgovformbuilder/digital-form-builder-runner:latest"
-          fail-build: true
-          severity-cutoff: critical
-          debug: true
           acs-report-enable: true
       - name: Inspect Generated SARIF
         if: ${{ success() || failure() }}
@@ -32,9 +29,6 @@ jobs:
         uses: anchore/scan-action@v2
         with:
           image: "ghcr.io/xgovformbuilder/digital-form-builder-designer:latest"
-          fail-build: true
-          severity-cutoff: critical
-          debug: true
           acs-report-enable: true
       - name: Inspect Generated SARIF
         if: ${{ success() || failure() }}

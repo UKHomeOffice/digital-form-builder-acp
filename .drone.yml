@@ -14,7 +14,7 @@ steps:
       - cd digital-form-builder
       - git checkout $${XGOV_SHA}
     volumes:
-    - name: xgov
+      - name: xgov
       path: /xgov
   - name: sonar_scan
     pull: if-not-exists

@@ -12,11 +12,11 @@ steps:
     image: alpine/git
     commands:
       - bin/env.sh
-      - source .env && echo "XXXX $${XGOV_SHA}"
+      - source .env && echo "XXXX $${XGOV_SHA} $${BASE_IMAGE_APP_SHA}"
       - env
       - git clone https://github.com/XGovFormBuilder/digital-form-builder/
       - cd digital-form-builder
-      - git checkout ${XGOV_SHA}
+      - git checkout $${XGOV_SHA}
   - name: dev-run-tests-with-coverage
     pull: if-not-exists
     image: node:12.18.4-buster

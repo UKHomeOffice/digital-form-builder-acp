@@ -1,40 +1,4 @@
 kind: pipeline
-name: code-analyze-check
-type: kubernetes
-
-trigger:
-  branch: main
-  event:
-    - push
-    - tag
-steps:
-  - name: clone xgov
-    image: alpine/git
-    commands:
-      - bin/env.sh
-      - source .env && echo "XXXX $${XGOV_SHA} $${BASE_IMAGE_APP_SHA}"
-      - env
-      - git clone https://github.com/XGovFormBuilder/digital-form-builder/
-      - cd digital-form-builder
-      - git checkout $${XGOV_SHA}
-  - name: dev-run-tests-with-coverage
-    pull: if-not-exists
-    image: node:12.18.4-buster
-    commands:
-      - cd digital-form-builder
-      - yarn
-      - yarn build:dependencies
-      - yarn test-cov
-  - name: sonar_scan
-    pull: if-not-exists
-    image: quay.digital.homeoffice.gov.uk/ukhomeofficedigital/sonar-scanner-node:6a03c77c7e1bad005893cdcc9cd3d99479b79d5c
-      - cp sonar/sonar-project.properties digital-form-builder/
-      - cp sonar/designer-sonar-project.properties digital-form-builder/designer/sonar-project.properties
-      - cp sonar/model-sonar-project.properties digital-form-builder/model/sonar-project.properties
-      - cp sonar/runner-sonar-project.properties digital-form-builder/runner/sonar-project.properties
-      - sonar-scanner -Dsonar.projectVersion=${DRONE_BUILD_NUMBER} -Dsonar.projectBaseDir=digital-form-builder -Dsonar.projectKey=digital-form-builder
----
-kind: pipeline
 name: designer
 type: kubernetes
 trigger:
@@ -93,6 +57,46 @@ steps:
         path: /root/.docker
     depends_on:
       - build docker tag
+depends_on:
+
+
+services:
+  - name: docker
+    image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
+  
+  - name: anchore-submission-server
+    image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/anchore-submission:latest
+    pull: always
+    commands:
+      - /run.sh server
+
+volumes:
+  - name: dockerclientconfig
+    temp: {}
+  - name: cache
+    host:
+      path: /tmp/cache
+      
+---
+kind: pipeline
+name: smoke-tests
+type: kubernetes
+
+trigger:
+  branch: main
+  event:
+    - push
+    - tag
+steps:
+  - name: clone xgov
+    image: alpine/git
+    commands:
+      - bin/env.sh
+      - source .env && echo "XXXX $${XGOV_SHA} $${BASE_IMAGE_APP_SHA}"
+      - env
+      - git clone https://github.com/XGovFormBuilder/digital-form-builder/
+      - cd digital-form-builder
+      - git checkout $${XGOV_SHA}
   # find cached node_modules by the file 'yarn.lock'
   - name: load-yarn-cache
     image: sinlead/drone-cache:1.0.0
@@ -112,8 +116,8 @@ steps:
       - git clone https://github.com/XGovFormBuilder/digital-form-builder/
       - cd digital-form-builder
       - git checkout $${XGOV_SHA}
-      - yarn install
-  
+      - yarn
+      - yarn build:dependencies
   # save installed node_modules to cache
   - name: save-yarn-cache
     image: sinlead/drone-cache:1.0.0
@@ -126,22 +130,4 @@ steps:
       - name: cache
         path: /cache
 depends_on:
-  - code-analyze-check
-
-
-services:
-  - name: docker
-    image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
-  
-  - name: anchore-submission-server
-    image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/anchore-submission:latest
-    pull: always
-    commands:
-      - /run.sh server
-
-volumes:
-  - name: dockerclientconfig
-    temp: {}
-  - name: cache
-    host:
-      path: /tmp/cache
+  - designer

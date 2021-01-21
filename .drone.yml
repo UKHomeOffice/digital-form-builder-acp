@@ -15,7 +15,7 @@ steps:
       - git checkout $${XGOV_SHA}
     volumes:
       - name: xgov
-      path: /xgov
+        path: /xgov
   - name: sonar_scan
     pull: if-not-exists
     image: quay.digital.homeoffice.gov.uk/ukhomeofficedigital/sonar-scanner-node:6a03c77c7e1bad005893cdcc9cd3d99479b79d5c
@@ -27,7 +27,7 @@ steps:
       - sonar-scanner -Dsonar.projectVersion=${DRONE_BUILD_NUMBER} -Dsonar.projectBaseDir=/xgov/digital-form-builder/ -Dsonar.projectKey=digital-form-builder
     volumes:
       - name: xgov
-      path: /xgov
+        path: /xgov
 volumes:
   - name: xgov
     temp: {}

@@ -8,25 +8,29 @@ trigger:
     - push
     - tag
 steps:
-  - name: sonar_scan
-    pull: if-not-exists
-    image: quay.digital.homeoffice.gov.uk/ukhomeofficedigital/sonar-scanner-node:6a03c77c7e1bad005893cdcc9cd3d99479b79d5c
+  - name: checkout xgov
     commands:
       - git clone https://github.com/XGovFormBuilder/digital-form-builder/
       - cd digital-form-builder
       - git checkout $${XGOV_SHA}
-      - cd ..
-      - cp sonar/sonar-project.properties digital-form-builder/
-      - cp sonar/designer-sonar-project.properties digital-form-builder/designer/sonar-project.properties
-      - cp sonar/model-sonar-project.properties digital-form-builder/model/sonar-project.properties
-      - cp sonar/runner-sonar-project.properties digital-form-builder/runner/sonar-project.properties
-      - sonar-scanner -Dsonar.projectVersion=${DRONE_BUILD_NUMBER} -Dsonar.projectBaseDir=digital-form-builder -Dsonar.projectKey=digital-form-builder
-    when:
-      branch:
-        - main
-      event:
-        - push
-        - tag
+    volumes:
+    - name: xgov
+      path: /xgov
+  - name: sonar_scan
+    pull: if-not-exists
+    image: quay.digital.homeoffice.gov.uk/ukhomeofficedigital/sonar-scanner-node:6a03c77c7e1bad005893cdcc9cd3d99479b79d5c
+    commands:
+      - cp sonar/sonar-project.properties /xgov/digital-form-builder/
+      - cp sonar/designer-sonar-project.properties /xgov/digital-form-builder/designer/sonar-project.properties
+      - cp sonar/model-sonar-project.properties /xgov/digital-form-builder/model/sonar-project.properties
+      - cp sonar/runner-sonar-project.properties /xgov/digital-form-builder/runner/sonar-project.properties
+      - sonar-scanner -Dsonar.projectVersion=${DRONE_BUILD_NUMBER} -Dsonar.projectBaseDir=/xgov/digital-form-builder/ -Dsonar.projectKey=digital-form-builder
+  volumes:
+    - name: xgov
+    path: /xgov
+volumes:
+  - name: xgov
+    temp: {}
 ---
 kind: pipeline
 name: designer
@@ -45,8 +49,8 @@ steps:
       - echo "Current XGOV tag $${XGOV_TAG}"
       - echo $${XGOV_TAG} > .tags
     volumes:
-      - name: dockerclientconfig
-        path: /root/.docker
+      - name: designer
+      path: /root/designer
   - name: ecr-login
     pull: if-not-exists
     image: quay.io/ukhomeofficedigital/dind-awscli:19.03.12-dind-1.18.55
@@ -87,7 +91,6 @@ steps:
         path: /root/.docker
     depends_on:
       - build docker tag
-
 depends_on:
   - code-analyze-check
 

@@ -14,7 +14,8 @@ steps:
       - bin/env.sh
       - git clone https://github.com/XGovFormBuilder/digital-form-builder/
       - cd digital-form-builder
-      - git checkout $${XGOV_SHA}
+      - echo "Current sha- ${XGOV_SHA}"
+      - git checkout ${XGOV_SHA}
   - name: dev-run-tests-with-coverage
     pull: if-not-exists
     image: node:12.18.4-buster

@@ -1,16 +1,25 @@
 name: Anchore scan
-
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
-  - name: Scan image
-    uses: anchore/scan-action@v2
-    with:
-      image: "ghcr.io/xgovformbuilder/digital-form-builder-runner:latest"
-      fail-build: true
-      severity-cutoff: critical
-  - name: Scan image
-    uses: anchore/scan-action@v2
-    with:
-      image: "ghcr.io/xgovformbuilder/digital-form-builder-designer:latest"
-      fail-build: true
-      severity-cutoff: critical
+jobs:
+  runner-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Scan image
+        uses: anchore/scan-action@v2
+        with:
+          image: "ghcr.io/xgovformbuilder/digital-form-builder-runner:latest"
+          fail-build: true
+          severity-cutoff: critical
+  designer-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Scan image
+        uses: anchore/scan-action@v2
+        with:
+          image: "ghcr.io/xgovformbuilder/digital-form-builder-designer:latest"
+          fail-build: true
+          severity-cutoff: critical

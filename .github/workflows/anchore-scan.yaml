@@ -39,3 +39,11 @@ jobs:
         with:
           name: AnchoreReports-Designer
           path: ${{ steps.scan.outputs.sarif }}
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: anchore/scan-action@v2
+        with:
+          image: "ghcr.io/xgovformbuilder/digital-form-builder-designer:latest"
+      - name: grype scan JSON results
+        run: for j in `ls ./anchore-reports/*.json`; do echo "---- ${j} ----"; cat ${j}; echo; done

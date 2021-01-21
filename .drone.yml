@@ -12,7 +12,7 @@ steps:
     image: alpine/git
     commands:
       - bin/env.sh
-      - echo "BASE_IMAGE_APP_SHA- $BASE_IMAGE_APP_SHA"
+      - info "XXXX"
       - git clone https://github.com/XGovFormBuilder/digital-form-builder/
       - cd digital-form-builder
       - git checkout ${XGOV_SHA}

@@ -57,7 +57,7 @@ steps:
         path: /root/.docker
     depends_on:
       - build docker tag
-depends_on:
+
 
 
 services:
@@ -73,10 +73,7 @@ services:
 volumes:
   - name: dockerclientconfig
     temp: {}
-  - name: cache
-    host:
-      path: /tmp/cache
-      
+    
 ---
 kind: pipeline
 name: smoke-tests
@@ -131,3 +128,6 @@ steps:
         path: /cache
 depends_on:
   - designer
+volumes:
+  - name: cache
+    path: /tmp/cache

@@ -1,12 +1,15 @@
 name: Anchore scan
-
 on:
   workflow_dispatch:
-  - name: Scan image
-    uses: anchore/scan-action@v2
-    with:
-      image: "ghcr.io/xgovformbuilder/digital-form-builder-runner:latest"
-  - name: Scan image
-    uses: anchore/scan-action@v2
-    with:
-      image: "ghcr.io/xgovformbuilder/digital-form-builder-designer:latest"
+jobs:
+  xgovformbuilder-updated:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Scan image
+        uses: anchore/scan-action@v2
+        with:
+          image: "ghcr.io/xgovformbuilder/digital-form-builder-runner:latest"
+      - name: Scan image
+        uses: anchore/scan-action@v2
+        with:
+          image: "ghcr.io/xgovformbuilder/digital-form-builder-designer:latest"

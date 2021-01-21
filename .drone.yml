@@ -21,11 +21,9 @@ steps:
     pull: if-not-exists
     image: node:12.18.4-buster
     commands:
-      - exit 1
       - cd digital-form-builder
-      - yarn
-      - yarn build:dependencies
       - yarn test-cov
+      - exit 1
   - name: sonar_scan
     pull: if-not-exists
     image: quay.digital.homeoffice.gov.uk/ukhomeofficedigital/sonar-scanner-node:6a03c77c7e1bad005893cdcc9cd3d99479b79d5c

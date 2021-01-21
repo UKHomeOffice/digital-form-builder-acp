@@ -14,18 +14,10 @@ steps:
     commands:
       - git clone https://github.com/XGovFormBuilder/digital-form-builder/
       - cd digital-form-builder
-      - git log -1
       - export LAST_COMMIT_AUTHOR=$(echo $(git log -1 --pretty=format:"%an"))
       - export LAST_COMMIT_AUTHOR_EMAIL=$(echo $(git log -1 --pretty=format:"%ae"))
       - export LAST_COMMIT_MESSAGE=$(echo $(git log -1 --pretty='%s%d [%an]'))
       - echo "Processing $LAST_COMMIT_MESSAGE $LAST_COMMIT_AUTHOR $LAST_COMMIT_AUTHOR_EMAIL"
-      - git describe --tags
-      - echo "Drone Env :$${DRONE_COMMIT_REF} $${DRONE_COMMIT_SHA} $${DRONE_COMMIT_LINK} $${DRONE_COMMIT_MESSAGE} $${DRONE_COMMIT_AUTHOR} $${DRONE_COMMIT_AUTHOR_EMAIL} $${DRONE_COMMIT_AUTHOR_NAME}"
-    environment:
-      XGOV_AUTHOR: $${LAST_COMMIT_AUTHOR}
-      XGOV_AUTHOR_EMAIL: $${LAST_COMMIT_AUTHOR_EMAIL}
-      XGOV_COMMIT_MESSAGE: $${LAST_COMMIT_MESSAGE}
-      XGOV_TAG: 1.0.0
     volumes:
       - name: dockerclientconfig
         path: /root/.docker
@@ -50,7 +42,6 @@ steps:
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
     commands:
       - source .env
-      - echo "Current SHA is $${BRANCH} $${DRONE_COMMIT} $${DRONE_COMMIT_AFTER} $${DRONE_COMMIT_AUTHOR} $${DRONE_COMMIT_AUTHOR_AVATAR} $${DRONE_COMMIT_AUTHOR_EMAIL} $${DRONE_COMMIT_AUTHOR_NAME}"
       - echo "Current XGOV tag $${XGOV_TAG}"
       - echo $${XGOV_TAG} > .tags
     volumes:
@@ -77,10 +68,10 @@ steps:
     pull: if-not-exists
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
     commands:
-      - export TAG_VERSION=$(cat .tags)
-      - echo " TAG - $TAG_VERSION"
-      - export TAG_VERSION=latest
-      - docker build --build-arg BASE_IMAGE_TAG=$${TAG_VERSION} -t digital-form-builder-designer:$${DRONE_COMMIT_SHA} -t digital-form-builder-designer:latest designer/. --no-cache
+      - export BASE_IMAGE_TAG=$(cat .tags)
+      - echo "Using base image  from TAG - $BASE_IMAGE_TAG"
+      - sh bin/env.sh
+      - docker build --build-arg BASE_IMAGE_TAG=$${BASE_IMAGE_TAG} -t digital-form-builder-designer:$${DRONE_COMMIT_SHA} -t digital-form-builder-designer:latest designer/. --no-cache
     volumes:
       - name: dockerclientconfig
         path: /root/.docker

@@ -70,7 +70,7 @@ steps:
     commands:
       - export BASE_IMAGE_TAG=$(cat .tags)
       - echo "Using base image  from TAG - $BASE_IMAGE_TAG"
-      - sh bin/env.sh
+      - bin/env.sh
       - docker build --build-arg BASE_IMAGE_TAG=$${BASE_IMAGE_TAG} -t digital-form-builder-designer:$${DRONE_COMMIT_SHA} -t digital-form-builder-designer:latest designer/. --no-cache
     volumes:
       - name: dockerclientconfig

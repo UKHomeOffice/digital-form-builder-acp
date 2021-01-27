@@ -1,6 +1,10 @@
 name: "My CodeQL config"
 paths:
   - xgovformbuilder
+  - xgovformbuilder/designer/server
+  - xgovformbuilder/designer/client
+  - xgovformbuilder/designer/model
+  - xgovformbuilder/designer/runner
 paths-ignore: 
   - '**/node_modules'
   - '**/*.test.js'

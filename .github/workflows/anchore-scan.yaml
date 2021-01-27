@@ -12,6 +12,8 @@ jobs:
         uses: anchore/scan-action@v2
         with:
           image: "ghcr.io/xgovformbuilder/digital-form-builder-runner:latest"
+          fail-build: true
+          severity-cutoff: critical 
       - name: Upload artifact
         uses: actions/upload-artifact@v1.0.0
         if: ${{ success() || failure() }}
@@ -26,6 +28,8 @@ jobs:
         with:
           image: "ghcr.io/xgovformbuilder/digital-form-builder-designer:latest"
           acs-report-enable: true
+          fail-build: true
+          severity-cutoff: critical   
       - name: Upload artifact
         uses: actions/upload-artifact@v1.0.0
         if: ${{ success() || failure() }}

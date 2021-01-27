@@ -45,4 +45,4 @@ jobs:
         if: ${{ success() || failure() }}
         with:
           name: AnchoreReports-Designer
-          path: results/javascript-builtin.sarif
+          path: ../results/javascript-builtin.sarif

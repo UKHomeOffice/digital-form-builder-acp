@@ -1,7 +1,5 @@
 name: "My CodeQL config"
 
-paths:
-  - xf 
 paths-ignore: 
-  - src/node_modules
+  - **/node_modules
   - '**/*.test.js'

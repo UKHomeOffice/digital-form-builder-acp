@@ -40,3 +40,9 @@ jobs:
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v1
+      - name: Upload artifact
+        uses: actions/upload-artifact@v1.0.0
+        if: ${{ success() || failure() }}
+        with:
+          name: AnchoreReports-Designer
+          path: results/javascript-builtin.sarif

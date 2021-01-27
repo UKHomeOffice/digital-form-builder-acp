@@ -7,13 +7,6 @@ name: "CodeQL"
 
 on:
   workflow_dispatch:
-  push:
-    branches: [master]
-  pull_request:
-    # The branches below must be a subset of the branches above
-    branches: [master]
-  schedule:
-    - cron: "0 14 * * 2"
 
 jobs:
   analyze:
@@ -30,13 +23,6 @@ jobs:
         # https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/configuring-code-scanning#overriding-automatic-language-detection
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-        with:
-          # We must fetch at least the immediate parents so that if this is
-          # a pull request then we can checkout the head.
-          fetch-depth: 2
-
       - uses: actions/checkout@v2 # Checkout the xgov repository in /xgovformbuilder
         with:
           repository: XGovFormBuilder/digital-form-builder
@@ -58,5 +44,3 @@ jobs:
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v1
-        paths: 
-          - xgovformbuilder

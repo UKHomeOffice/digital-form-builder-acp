@@ -36,13 +36,3 @@ jobs:
         with:
           name: AnchoreReports-Designer
           path: vulnerabilities.json
-  scan:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: anchore/scan-action@v2
-        with:
-          image: "ghcr.io/xgovformbuilder/digital-form-builder-designer:latest"
-      - name: grype scan JSON results-debug
-        run : ls -lah
-      - name: grype scan JSON results
-        run: cat vulnerabilities.json

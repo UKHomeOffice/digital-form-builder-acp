@@ -52,6 +52,7 @@ steps:
     pull: always
     environment:
       IMAGE_NAME: digital-form-builder-designer:${DRONE_COMMIT_SHA}
+      WHITELIST: CVE-2020-7788,CVE-2020-7774,CVE-2017-18589,CVE-2020-7769,CVE-2017-18589
     volumes:
       - name: dockerclientconfig
         path: /root/.docker

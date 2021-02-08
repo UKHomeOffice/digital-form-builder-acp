@@ -68,8 +68,8 @@ steps:
       last_successful: true
       repositories:
         - digital-form-builder-acp-deploy
-  depends_on:
-    - anchore scan
+    depends_on:
+      - anchore scan
 services:
   - name: docker
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind

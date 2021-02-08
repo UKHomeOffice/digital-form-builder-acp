@@ -63,6 +63,8 @@ steps:
     settings:
       server: drone-gh.acp.homeoffice.gov.uk
       deploy: development
+      token:
+        from_secret: downstream-trigger-token
       params:
         - SOURCE_HASH=${DRONE_COMMIT_HASH}
         - APP=digital-form-builder-designer

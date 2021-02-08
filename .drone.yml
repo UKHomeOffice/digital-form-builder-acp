@@ -57,9 +57,19 @@ steps:
         path: /root/.docker
     depends_on:
       - build docker tag
-
-
-
+  - name: trigger dev deploy
+    image: plugins/downstream
+    settings:
+      server: drone-gh.acp.homeoffice.gov.uk
+      deploy: development
+      params:
+        - SOURCE_HASH=${DRONE_COMMIT_HASH}
+        - APP=digital-form-builder-designer
+      last_successful: true
+      repositories:
+        - digital-form-builder-acp-deploy
+  depends_on:
+    - anchore scan
 services:
   - name: docker
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind

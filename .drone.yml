@@ -70,7 +70,7 @@ steps:
         - APP=digital-form-builder-designer
       last_successful: true
       repositories:
-        - digital-form-builder-acp-deploy
+        - UKHomeOffice/digital-form-builder-acp-deploy
     depends_on:
       - anchore scan
 services:

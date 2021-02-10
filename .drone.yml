@@ -66,8 +66,7 @@ steps:
         from_secret: downstream-trigger-token
       fork: true
       repositories:
-        - UKHomeOffice/digital-form-builder-acp-deploy@main
-
+        - UKHomeOffice/acp-example-app
 
 
 

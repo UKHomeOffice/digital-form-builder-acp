@@ -1,11 +1,7 @@
 kind: pipeline
 name: designer
 type: kubernetes
-trigger:
-  branch: main
-  event:
-    - push
-    - tag
+
 steps:
   - name: setup tags
     pull: if-not-exists

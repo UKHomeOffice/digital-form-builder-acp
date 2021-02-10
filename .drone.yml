@@ -1,11 +1,9 @@
 kind: pipeline
-name: designer
+name: default
 type: kubernetes
-trigger:
-  branch: main
-  event:
-    - push
-    - tag
+
+
+
 steps:
   - name: setup tags
     pull: if-not-exists
@@ -77,7 +75,7 @@ steps:
 services:
   - name: docker
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
-  
+
   - name: anchore-submission-server
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/anchore-submission:latest
     pull: always

@@ -69,8 +69,10 @@ steps:
       params:
         - SOURCE_HASH=${DRONE_COMMIT_HASH}
         - APP=digital-form-builder-designer
+      last_successful: true
       repositories:
-        - UKHomeOffice/acp-example-app@main
+        - UKHomeOffice/digital-form-builder-acp@master
+
 
 
 

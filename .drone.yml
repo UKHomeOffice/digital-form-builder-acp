@@ -58,15 +58,16 @@ steps:
       - build docker tag
 
 
-  - name: trigger dev deploy
-    image: plugins/downstream
-    settings:
-      server: https://drone-gh.acp.homeoffice.gov.uk/
-      token:
-        from_secret: test
-      fork: true
-      repositories:
-        - UKHomeOffice/acp-example-app@master
+- name: trigger dev deploy
+  image: plugins/downstream
+  settings:
+    server: https://drone-gh.acp.homeoffice.gov.uk/
+    token:
+      from_secret: test
+    fork: true
+    repositories:
+      - UKHomeOffice/digital-form-builder-acp@main
+
 
 
 services:

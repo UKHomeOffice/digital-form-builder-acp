@@ -11,6 +11,7 @@ steps:
     pull: if-not-exists
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
     commands:
+      - pwd
       - source .env
       - echo "Current XGOV tag $${XGOV_TAG}"
       - echo $${XGOV_TAG} > .tags

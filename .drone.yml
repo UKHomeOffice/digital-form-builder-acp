@@ -62,11 +62,11 @@ steps:
     image: plugins/downstream
     settings:
       server: https://drone-gh.acp.homeoffice.gov.uk/
-      fork: true
       token:
         from_secret: test
+      fork: true
       repositories:
-        - UKHomeOffice/acp-example-app@matser
+        - UKHomeOffice/acp-example-app@master
 
 
 services:

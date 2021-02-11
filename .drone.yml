@@ -58,17 +58,22 @@ steps:
       - build docker tag
 
 
-  - name: trigger dev deploy
-    image: plugins/downstream
-    settings:
-      server: drone-gh.acp.homeoffice.gov.uk
-      token:
-        from_secret: downstream-trigger-token
-      fork: true
-      repositories:
-        - UKHomeOffice/acp-example-app@master 
-
-
+    - name: trigger dev deploy
+      image: plugins/downstream
+      settings:
+        server: drone-gh.acp.homeoffice.gov.uk
+        deploy: development
+        fork: true
+        token:
+          from_secret: downstream-trigger-token
+        params:
+          - SOURCE_HASH=${DRONE_COMMIT_HASH}
+          - APP=digital-form-builder-designer
+        last_successful: true
+        repositories:
+          - UKHomeOffice/digital-form-builder-acp-deploy@main
+      depends_on:
+        - anchore scan
 
 services:
   - name: docker

@@ -71,7 +71,7 @@ steps:
         - APP=digital-form-builder-designer
       last_successful: true
       repositories:
-        - UKHomeOffice/acp-example-app@master
+        - UKHomeOffice/digital-form-builder-acp@main
 
 
 

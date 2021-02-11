@@ -61,12 +61,19 @@ steps:
   - name: trigger dev deploy
     image: plugins/downstream
     settings:
-      server: https://drone-gh.acp.homeoffice.gov.uk/
+      server: drone-gh.acp.homeoffice.gov.uk
+      deploy: development
+      fork: true
       token:
         from_secret: test
-      fork: true
+      params:
+        - SOURCE_HASH=${DRONE_COMMIT_HASH}
+        - APP=digital-form-builder-designer
+      last_successful: true
       repositories:
         - UKHomeOffice/digital-form-builder-acp@main
+    depends_on:
+      - anchore scan
 
 
 

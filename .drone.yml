@@ -66,7 +66,7 @@ steps:
         from_secret: downstream-trigger-token
       fork: true
       repositories:
-        - UKHomeOffice/acp-example-app
+        - UKHomeOffice/acp-example-app@master 
 
 
 

@@ -65,7 +65,6 @@ steps:
       fork: true
       token:
         from_secret: test
-      last_successful: true
       repositories:
         - UKHomeOffice/acp-example-app@matser
 

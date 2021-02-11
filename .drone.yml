@@ -61,7 +61,7 @@ steps:
   - name: trigger dev deploy
     image: plugins/downstream
     settings:
-      server: drone-gh.acp.homeoffice.gov.uk
+      server: https://drone-gh.acp.homeoffice.gov.uk/
       deploy: development
       fork: true
       token:

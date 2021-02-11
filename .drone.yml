@@ -71,11 +71,8 @@ steps:
         - APP=digital-form-builder-designer
       last_successful: true
       repositories:
-        - UKHomeOffice/digital-form-builder-acp@main
-
-
-
-
+        - UKHomeOffice/digital-form-builder-acp-deploy@main
+        
 
 services:
   - name: docker

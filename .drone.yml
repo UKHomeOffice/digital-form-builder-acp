@@ -47,17 +47,6 @@ steps:
         path: /root/.docker
     depends_on:
       - setup tags
-  - name: anchore scan
-    image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/anchore-submission:latest
-    pull: always
-    environment:
-      IMAGE_NAME: digital-form-builder-designer:${DRONE_COMMIT_SHA}
-      WHITELIST: CVE-2020-7788,CVE-2020-7774,CVE-2017-18589,CVE-2020-7769,CVE-2017-18589
-    volumes:
-      - name: dockerclientconfig
-        path: /root/.docker
-    depends_on:
-      - build docker tag
   - name: trigger dev deploy
     image: plugins/downstream
     settings:
@@ -69,20 +58,15 @@ steps:
       params:
         - SOURCE_HASH=${DRONE_COMMIT_HASH}
         - APP=digital-form-builder-designer
+        - ./
       last_successful: true
       repositories:
         - UKHomeOffice/digital-form-builder-acp-deploy@main
     depends_on:
-      - anchore scan
+      - build docker tag
 services:
   - name: docker
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
-  
-  - name: anchore-submission-server
-    image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/anchore-submission:latest
-    pull: always
-    commands:
-      - /run.sh server
 
 volumes:
   - name: dockerclientconfig

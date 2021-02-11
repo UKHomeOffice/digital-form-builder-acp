@@ -65,7 +65,7 @@ steps:
         deploy: development
         fork: true
         token:
-          from_secret: downstream-trigger-token
+          from_secret: test
         params:
           - SOURCE_HASH=${DRONE_COMMIT_HASH}
           - APP=digital-form-builder-designer

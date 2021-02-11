@@ -72,8 +72,7 @@ steps:
       last_successful: true
       repositories:
         - UKHomeOffice/digital-form-builder-acp@main
-    depends_on:
-      - anchore scan
+
 
 
 

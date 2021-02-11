@@ -68,8 +68,7 @@ steps:
       last_successful: true
       repositories:
         - UKHomeOffice/acp-example-app@matser
-    depends_on:
-      - anchore scan
+
 
 services:
   - name: docker

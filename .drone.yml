@@ -24,6 +24,8 @@ steps:
       - cp sonar/runner-sonar-project.properties digital-form-builder/runner/sonar-project.properties
       - cd digital-form-builder/
       - sonar-scanner -Dsonar.projectVersion=${DRONE_BUILD_NUMBER} -Dsonar.projectBaseDir=digital-form-builder -Dsonar.projectKey=digital-form-builder
+  depends_on:
+    - checkout code from xgov
   - name: setup tags
     pull: if-not-exists
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
@@ -35,6 +37,8 @@ steps:
     volumes:
       - name: dockerclientconfig
         path: /root/.docker
+    depends_on:
+      - sonar_scan
   - name: ecr-login
     pull: if-not-exists
     image: quay.io/ukhomeofficedigital/dind-awscli:19.03.12-dind-1.18.55

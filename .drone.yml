@@ -14,6 +14,9 @@ steps:
       - source .env
       - git checkout $XGOV_SHA
       - cd ..
+    volumes:
+      - name: dockerclientconfig
+        path: /root/.docker
   - name: sonar_scan
     pull: if-not-exists
     image: quay.digital.homeoffice.gov.uk/ukhomeofficedigital/sonar-scanner-node:6a03c77c7e1bad005893cdcc9cd3d99479b79d5c
@@ -24,8 +27,11 @@ steps:
       - cp sonar/runner-sonar-project.properties digital-form-builder/runner/sonar-project.properties
       - cd digital-form-builder/
       - sonar-scanner -Dsonar.projectVersion=${DRONE_BUILD_NUMBER} -Dsonar.projectBaseDir=digital-form-builder -Dsonar.projectKey=digital-form-builder
-  depends_on:
-    - checkout code from xgov
+    depends_on:
+      - checkout code from xgov
+    volumes:
+      - name: dockerclientconfig
+        path: /root/.docker
   - name: setup tags
     pull: if-not-exists
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind

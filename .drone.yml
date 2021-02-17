@@ -14,7 +14,7 @@ steps:
       -  bin/env.sh
   - name: setup tags
     pull: if-not-exists
-    image: node:6
+    image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
     commands:
       -  bin/env.sh
     depends_on:

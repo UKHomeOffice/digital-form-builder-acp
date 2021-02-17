@@ -23,7 +23,7 @@ steps:
     pull: if-not-exists
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
     commands:
-      - echo $BASE_IMAGE_VERSION
+      - env
     depends_on:
       - setup tags
   - name: publish to ecr

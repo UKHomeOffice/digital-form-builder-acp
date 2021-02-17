@@ -53,6 +53,8 @@ steps:
       - echo "Current XGOV tag $${XGOV_TAG}"
       - echo $${XGOV_TAG} > .tags
       - ls -lah
+    environment:
+      BASE_IMAGE_TAG: $${BASE_IMAGE_TAG}
     volumes:
       - name: dockerclientconfig
         path: /root/.docker
@@ -69,7 +71,7 @@ steps:
       AWS_REGION: eu-west-2
     commands:
       - n=0; while [ "$n" -lt 60 ] && [ ! docker stats --no-stream ]; do n=$(( n + 1 )); sleep 1; done
-      - aws ecr get-login-password --region $${AWS_REGION} | docker login --username AWS --password-stdin 340268328991.dkr.ecr.$${AWS_REGION}.amazonaws.com
+      - aws ecr get-login-password --region $${AWS_REGION} | docker login --username AWS --password-stdin 340268328991.dkr.ecr.$${AWS_REGION}.amazonaws.com | docker logout
     volumes:
       - name: dockerclientconfig
         path: /root/.docker
@@ -79,8 +81,6 @@ steps:
     pull: if-not-exists
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
     commands:
-      - export BASE_IMAGE_TAG=$(cat .tags)
-      - echo "Using base image  from TAG - $BASE_IMAGE_TAG"
       - bin/env.sh
       - docker build --build-arg BASE_IMAGE_TAG=$${BASE_IMAGE_TAG} -t digital-form-builder-designer:$${DRONE_COMMIT_SHA} -t digital-form-builder-designer:latest designer/. --no-cache
     volumes:
@@ -100,7 +100,7 @@ steps:
         registry: 340268328991.dkr.ecr.eu-west-2.amazonaws.com
         dockerfile: designer/Dockerfile
       build_args:
-        - BASE_IMAGE_TAG=$${BASE_IMAGE_TAG}
+        - BASE_IMAGE_TAG=${BASE_IMAGE_VERSION}
       tags:
         - ${DRONE_COMMIT_SHA}
         - latest

@@ -96,10 +96,10 @@ steps:
         secret_key:
           from_secret: DESIGNER_AWS_SECRET_ACCESS_KEY
         region: eu-west-2
-        repo: stp/fco-form-builder
+        repo: stp/forms-designer
         registry: 340268328991.dkr.ecr.eu-west-2.amazonaws.com
       build_args:
-        - HTTP_PROXY=$${BASE_IMAGE_TAG}
+        - BASE_IMAGE_TAG=$${BASE_IMAGE_TAG}
       tags:
         - ${DRONE_COMMIT_SHA}
         - latest
@@ -108,6 +108,11 @@ steps:
         path: /root/.docker
     depends_on:
       - setup tags
+  - name: list tags
+    pull: if-not-exists
+    image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
+    commands:
+      - docker image search --list-tags
   - name: trigger dev deploy
     image: plugins/downstream
     settings:

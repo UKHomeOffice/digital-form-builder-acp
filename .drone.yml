@@ -98,6 +98,7 @@ steps:
         region: eu-west-2
         repo: stp/forms-designer
         registry: 340268328991.dkr.ecr.eu-west-2.amazonaws.com
+        dockerfile: designer/Dockerfile
       build_args:
         - BASE_IMAGE_TAG=$${BASE_IMAGE_TAG}
       tags:

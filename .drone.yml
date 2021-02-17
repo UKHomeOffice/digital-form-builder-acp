@@ -18,33 +18,6 @@ steps:
     volumes:
       - name: dockerclientconfig
         path: /root/.docker
-  - name: dev-run-tests-with-coverage
-    pull: if-not-exists
-    image: node:12.18.4-buster
-    commands:
-      - cd digital-form-builder
-      - yarn
-      - yarn build:dependencies
-      - yarn test-cov
-    depends_on:
-      - checkout code from xgov
-    volumes:
-      - name: dockerclientconfig
-        path: /root/.docker
-  - name: sonar_scan
-    pull: if-not-exists
-    image: quay.digital.homeoffice.gov.uk/ukhomeofficedigital/sonar-scanner-node:6a03c77c7e1bad005893cdcc9cd3d99479b79d5c
-    commands:
-      - cp sonar/sonar-project.properties digital-form-builder/
-      - cp sonar/designer-sonar-project.properties digital-form-builder/designer/sonar-project.properties
-      - cp sonar/model-sonar-project.properties digital-form-builder/model/sonar-project.properties
-      - cp sonar/runner-sonar-project.properties digital-form-builder/runner/sonar-project.properties
-      - sonar-scanner -Dsonar.projectVersion=${DRONE_BUILD_NUMBER} -Dsonar.projectBaseDir=digital-form-builder -Dsonar.projectKey=digital-form-builder
-    depends_on:
-      - dev-run-tests-with-coverage
-    volumes:
-      - name: dockerclientconfig
-        path: /root/.docker
   - name: setup tags
     pull: if-not-exists
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
@@ -54,30 +27,12 @@ steps:
       - name: dockerclientconfig
         path: /root/.docker
     depends_on:
-      - sonar_scan
-  - name: ecr-login
-    pull: if-not-exists
-    image: quay.io/ukhomeofficedigital/dind-awscli:19.03.12-dind-1.18.55
-    environment:
-      AWS_ACCESS_KEY_ID:
-        from_secret: DESIGNER_REGISTRY_AWS_ACCESS_KEY_ID
-      AWS_SECRET_ACCESS_KEY:
-        from_secret: DESIGNER_REGISTRY_AWS_SECRET_ACCESS_KEY
-      AWS_REGION: eu-west-2
-    commands:
-      - n=0; while [ "$n" -lt 60 ] && [ ! docker stats --no-stream ]; do n=$(( n + 1 )); sleep 1; done
-      - aws ecr get-login-password --region $${AWS_REGION} | docker login --username AWS --password-stdin 340268328991.dkr.ecr.$${AWS_REGION}.amazonaws.com | docker logout
-    volumes:
-      - name: dockerclientconfig
-        path: /root/.docker
-    depends_on:
-      - setup tags
-  - name: build docker tag
+      - checkout code from xgov
+  - name: print setup
     pull: if-not-exists
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
     commands:
-      - bin/env.sh
-      - docker build --build-arg BASE_IMAGE_TAG=$${BASE_IMAGE_VERSION} -t digital-form-builder-designer:$${DRONE_COMMIT_SHA} -t digital-form-builder-designer:latest designer/. --no-cache
+      - echo $BASE_IMAGE_VERSION
     volumes:
       - name: dockerclientconfig
         path: /root/.docker
@@ -103,7 +58,7 @@ steps:
       - name: dockerclientconfig
         path: /root/.docker
     depends_on:
-      - setup tags
+      - print setup
   - name: list tags
     pull: if-not-exists
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind

@@ -37,6 +37,7 @@ steps:
       repo: stp/forms-designer
       registry: 340268328991.dkr.ecr.eu-west-2.amazonaws.com
       dockerfile: designer/Dockerfile
+      build_args_from_env: [ BASE_IMAGE_TAG ]
       build_args:
         - BASE_IMAGE_TAG=${BASE_IMAGE_VERSION}
       tags:

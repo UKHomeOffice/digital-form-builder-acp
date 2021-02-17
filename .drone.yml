@@ -14,14 +14,14 @@ steps:
       -  bin/env.sh
   - name: setup tags
     pull: if-not-exists
-    image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
+    image: node:6
     commands:
       -  bin/env.sh
     depends_on:
       - checkout code from xgov
   - name: print setup
     pull: if-not-exists
-    image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
+    image: node:6
     commands:
       - env
     depends_on:

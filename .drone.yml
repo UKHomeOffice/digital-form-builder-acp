@@ -11,21 +11,12 @@ steps:
     image: alpine/git
     commands:
       - git clone https://github.com/XGovFormBuilder/digital-form-builder/
-      - source .env
-      - cd digital-form-builder
-      - git checkout $XGOV_SHA
-      - cd ..
-    volumes:
-      - name: dockerclientconfig
-        path: /root/.docker
+      -  bin/env.sh
   - name: setup tags
     pull: if-not-exists
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
     commands:
       -  bin/env.sh
-    volumes:
-      - name: dockerclientconfig
-        path: /root/.docker
     depends_on:
       - checkout code from xgov
   - name: print setup
@@ -33,9 +24,6 @@ steps:
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
     commands:
       - echo $BASE_IMAGE_VERSION
-    volumes:
-      - name: dockerclientconfig
-        path: /root/.docker
     depends_on:
       - setup tags
   - name: publish to ecr
@@ -54,18 +42,8 @@ steps:
       tags:
         - ${DRONE_COMMIT_SHA}
         - latest
-    volumes:
-      - name: dockerclientconfig
-        path: /root/.docker
     depends_on:
       - print setup
-  - name: list tags
-    pull: if-not-exists
-    image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
-    commands:
-      - docker image search --list-tags 340268328991.dkr.ecr.eu-west-2.amazonaws.com/stp/forms-designer
-    depends_on:
-      - publish to ecr
   - name: trigger dev deploy
     image: plugins/downstream
     settings:
@@ -83,10 +61,3 @@ steps:
         - UKHomeOffice/digital-form-builder-acp-deploy@main
     depends_on:
       - publish to ecr
-services:
-  - name: docker
-    image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
-
-volumes:
-  - name: dockerclientconfig
-    temp: {}

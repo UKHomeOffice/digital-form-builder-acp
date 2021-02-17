@@ -113,7 +113,9 @@ steps:
     pull: if-not-exists
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
     commands:
-      - docker image search --list-tags
+      - docker image search --list-tags 340268328991.dkr.ecr.eu-west-2.amazonaws.com/stp/forms-designer
+    depends_on:
+      - publish to ecr
   - name: trigger dev deploy
     image: plugins/downstream
     settings:

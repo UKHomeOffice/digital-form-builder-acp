@@ -92,9 +92,9 @@ steps:
     image: plugins/ecr
     settings:
       access_key:
-        from_secret: DESIGNER_AWS_ACCESS_KEY_ID
+        from_secret: DESIGNER_REGISTRY_AWS_ACCESS_KEY_ID
         secret_key:
-          from_secret: DESIGNER_AWS_SECRET_ACCESS_KEY
+          from_secret: DESIGNER_REGISTRY_AWS_SECRET_ACCESS_KEY
         region: eu-west-2
         repo: stp/forms-designer
         registry: 340268328991.dkr.ecr.eu-west-2.amazonaws.com

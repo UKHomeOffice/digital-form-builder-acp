@@ -103,7 +103,7 @@ steps:
       tags:
         - ${DRONE_COMMIT_SHA}
         - latest
-        - ${BASE_IMAGE_TAG}-1
+    volumes:
       - name: dockerclientconfig
         path: /root/.docker
     depends_on:

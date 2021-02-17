@@ -39,8 +39,6 @@ steps:
       - cp sonar/designer-sonar-project.properties digital-form-builder/designer/sonar-project.properties
       - cp sonar/model-sonar-project.properties digital-form-builder/model/sonar-project.properties
       - cp sonar/runner-sonar-project.properties digital-form-builder/runner/sonar-project.properties
-      - pwd
-      - ls -lah digital-form-builder/
       - sonar-scanner -Dsonar.projectVersion=${DRONE_BUILD_NUMBER} -Dsonar.projectBaseDir=digital-form-builder -Dsonar.projectKey=digital-form-builder
     depends_on:
       - dev-run-tests-with-coverage
@@ -86,6 +84,26 @@ steps:
       - bin/env.sh
       - docker build --build-arg BASE_IMAGE_TAG=$${BASE_IMAGE_TAG} -t digital-form-builder-designer:$${DRONE_COMMIT_SHA} -t digital-form-builder-designer:latest designer/. --no-cache
     volumes:
+      - name: dockerclientconfig
+        path: /root/.docker
+    depends_on:
+      - setup tags
+  - name: publish to ecr
+    image: plugins/ecr
+    settings:
+      access_key:
+        from_secret: DESIGNER_AWS_ACCESS_KEY_ID
+        secret_key:
+          from_secret: DESIGNER_AWS_SECRET_ACCESS_KEY
+        region: eu-west-2
+        repo: stp/fco-form-builder
+        registry: 340268328991.dkr.ecr.eu-west-2.amazonaws.com
+      build_args:
+        - HTTP_PROXY=$${BASE_IMAGE_TAG}
+      tags:
+        - ${DRONE_COMMIT_SHA}
+        - latest
+        - ${BASE_IMAGE_TAG}-1
       - name: dockerclientconfig
         path: /root/.docker
     depends_on:

@@ -39,7 +39,7 @@ steps:
       dockerfile: designer/Dockerfile
       build_args_from_env: [ BASE_IMAGE_TAG ]
       build_args:
-        - BASE_IMAGE_TAG=${BASE_IMAGE_VERSION}
+        - BASE_IMAGE_TAG=latest
       tags:
         - ${DRONE_COMMIT_SHA}
         - latest

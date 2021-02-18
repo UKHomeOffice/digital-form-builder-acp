@@ -4,5 +4,5 @@
 source .env
 pwd
 ls
-source .env | eval "echo \"$(cat digital-form-builder/designer/Dockefile)\""
+source .env | eval "echo \"$(cat designer/Dockerfile)\""
 exit 1

@@ -57,7 +57,8 @@ steps:
     pull: if-not-exists
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
     commands:
-      - bin/env-designer.sh
+      - ls -lag bin/
+      - bin/designer.sh
     depends_on:
       - checkout code from xgov
   - name: publish to ecr
@@ -114,7 +115,8 @@ steps:
     pull: if-not-exists
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
     commands:
-      - bin/env-runner.sh
+      - ls -lag bin/
+      - bin/runner.sh
     depends_on:
       - checkout code from xgov
   - name: publish to ecr

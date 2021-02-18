@@ -25,6 +25,8 @@ steps:
       - aws ecr get-login-password --region $${AWS_REGION} | docker login --username AWS --password-stdin 340268328991.dkr.ecr.$${AWS_REGION}.amazonaws.com
       - source .env
       - echo "Current XGOV tag $${XGOV_TAG}"
+      - docker build --build-arg BASE_IMAGE_TAG=$${XGOV_TAG} -t stp/forms-designer:$${DRONE_COMMIT_SHA} -t stp/forms-designer:latest designer/. --no-cache
+      - docker image push stp/forms-designer:$${DRONE_COMMIT_SHA}
     volumes:
       - name: dockerclientconfig
         path: /root/.docker

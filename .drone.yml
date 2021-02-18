@@ -18,7 +18,7 @@ steps:
     commands:
       -  bin/env.sh
       - source .env
-      - sed -e 's|$BASE_IMAGE_TAG|'$XGOV_TAG'|g designer/Dockefile > designer/Dockefile.out
+      - eval "echo \"$(cat designer/Dockefile)\""
       - cat designer/Dockefile.out
     depends_on:
       - checkout code from xgov
@@ -40,8 +40,6 @@ steps:
       repo: stp/forms-designer
       registry: 340268328991.dkr.ecr.eu-west-2.amazonaws.com
       dockerfile: designer/Dockefile.out
-      build_args:
-        - BASE_IMAGE_TAG=latest
       tags:
         - ${DRONE_COMMIT_SHA}
         - latest

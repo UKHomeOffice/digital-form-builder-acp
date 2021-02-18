@@ -40,10 +40,10 @@ steps:
     pull: if-not-exists
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
     commands:
-      - bin/env.sh
       - source .env
-      - echo "docker build --build-arg BASE_IMAGE_TAG=$${BASE_IMAGE_TAG}"
-      - docker build --build-arg BASE_IMAGE_TAG=$${BASE_IMAGE_TAG} -t forms-designer:$${DRONE_COMMIT_SHA} -t forms-designer:latest designer/. --no-cache
+      - echo "Current XGOV tag $${XGOV_TAG}"
+      - echo "docker build --build-arg BASE_IMAGE_TAG=$${XGOV_TAG}"
+      - docker build --build-arg BASE_IMAGE_TAG=$${XGOV_TAG} -t forms-designer:$${DRONE_COMMIT_SHA} -t forms-designer:latest designer/. --no-cache
     volumes:
       - name: dockerclientconfig
         path: /root/.docker

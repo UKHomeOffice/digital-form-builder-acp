@@ -35,10 +35,9 @@ steps:
       - source .env
       - echo "Current XGOV tag $${XGOV_TAG}"
       - echo "docker build --build-arg BASE_IMAGE_TAG=$${XGOV_TAG}"
-      - docker build --build-arg BASE_IMAGE_TAG=$${XGOV_TAG} -t forms-designer:$${DRONE_COMMIT_SHA} -t forms-designer:latest designer/. --no-cache
-      - docker image push 340268328991.dkr.ecr.$${AWS_REGION}.amazonaws.com/stp/forms-designer:$${BASE_IMAGE_TAG}
-      - docker image push 340268328991.dkr.ecr.$${AWS_REGION}.amazonaws.com/stp/forms-designer:$${DRONE_COMMIT_SHA}
-      - docker image push 340268328991.dkr.ecr.$${AWS_REGION}.amazonaws.com/stp/forms-designer:latest
+      - docker build --build-arg BASE_IMAGE_TAG=$${XGOV_TAG} -t stp/forms-designer:$${DRONE_COMMIT_SHA} -t stp/forms-designer:latest designer/. --no-cache
+      - docker image push stp/forms-designer:$${DRONE_COMMIT_SHA}
+      - docker image push stp/forms-designer:latest
     volumes:
       - name: dockerclientconfig
         path: /root/.docker

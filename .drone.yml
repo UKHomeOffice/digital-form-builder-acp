@@ -65,6 +65,8 @@ steps:
     volumes:
       - name: dockerclientconfig
         path: /root/.docker
+    depends_on:
+      - print setup
   - name: trigger dev deploy
     image: plugins/downstream
     settings:

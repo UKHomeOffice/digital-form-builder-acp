@@ -43,7 +43,7 @@ steps:
       - name: dockerclientconfig
         path: /root/.docker
     depends_on:
-      - setup tags
+      - ecr-login
   - name: trigger dev deploy
     image: plugins/downstream
     settings:

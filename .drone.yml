@@ -16,7 +16,7 @@ steps:
     pull: if-not-exists
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
     commands:
-      -  bin/env.sh
+      - bin/env.sh
       - source .env
       - source .env | eval "echo \"$(cat designer\/Dockefile)\""
       - cat designer/Dockefile.out

@@ -11,43 +11,39 @@ steps:
     image: alpine/git
     commands:
       - git clone https://github.com/XGovFormBuilder/digital-form-builder/
-  - name: ecr-login
-    pull: if-not-exists
-    image: quay.io/ukhomeofficedigital/dind-awscli:19.03.12-dind-1.18.55
-    environment:
-      AWS_ACCESS_KEY_ID:
-        from_secret: DESIGNER_REGISTRY_AWS_ACCESS_KEY_ID
-      AWS_SECRET_ACCESS_KEY:
-        from_secret: DESIGNER_REGISTRY_AWS_SECRET_ACCESS_KEY
-      AWS_REGION: eu-west-2
-    commands:
-      - source .env
-      - echo "Current XGOV tag $${XGOV_TAG}"
-      - n=0; while [ "$n" -lt 120 ] && [ ! docker stats --no-stream ]; do n=$(( n + 1 )); sleep 1; done
-      - aws ecr get-login-password --region $${AWS_REGION} | docker login --username AWS --password-stdin 340268328991.dkr.ecr.$${AWS_REGION}.amazonaws.com | docker build --build-arg BASE_IMAGE_TAG=$${XGOV_TAG} -t stp/forms-designer:$${DRONE_COMMIT_SHA} -t stp/forms-designer:latest designer/. --no-cache
-      - docker image push stp/forms-designer:$${DRONE_COMMIT_SHA}
-    depends_on:
-      - checkout code from xgov
-  - name: build and publish docker tag
+      -  bin/env.sh
+  - name: setup tags
     pull: if-not-exists
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
-    environment:
-      AWS_ACCESS_KEY_ID:
-        from_secret: DESIGNER_REGISTRY_AWS_ACCESS_KEY_ID
-      AWS_SECRET_ACCESS_KEY:
-        from_secret: DESIGNER_REGISTRY_AWS_SECRET_ACCESS_KEY
-      AWS_REGION: eu-west-2
     commands:
-      - source .env
-      - echo "Current XGOV tag $${XGOV_TAG}"
-      - echo "docker build --build-arg BASE_IMAGE_TAG=$${XGOV_TAG}"
-      - n=0; while [ "$n" -lt 60 ] && [ ! docker stats --no-stream ]; do n=$(( n + 1 )); sleep 1; done
-      - docker build --build-arg BASE_IMAGE_TAG=$${XGOV_TAG} -t stp/forms-designer:$${DRONE_COMMIT_SHA} -t stp/forms-designer:latest designer/. --no-cache
-      - aws ecr get-login-password --region $${AWS_REGION} | docker login --username AWS --password-stdin 340268328991.dkr.ecr.$${AWS_REGION}.amazonaws.com
-      - docker push 340268328991.dkr.ecr.$${AWS_REGION}.amazonaws.com/stp/forms-designer:$${DRONE_COMMIT_SHA}
-      - docker  push 340268328991.dkr.ecr.$${AWS_REGION}.amazonaws.com/stp/forms-designer:latest
+      -  bin/env.sh
     depends_on:
-      - ecr-login
+      - checkout code from xgov
+  - name: print setup
+    pull: if-not-exists
+    image: node:6
+    commands:
+      - env
+    depends_on:
+      - setup tags
+  - name: publish to ecr
+    image: plugins/ecr
+    settings:
+      access_key:
+        from_secret: DESIGNER_REGISTRY_AWS_ACCESS_KEY_ID
+      secret_key:
+        from_secret: DESIGNER_REGISTRY_AWS_SECRET_ACCESS_KEY
+      region: eu-west-2
+      repo: stp/forms-designer
+      registry: 340268328991.dkr.ecr.eu-west-2.amazonaws.com
+      dockerfile: designer/Dockerfile
+      build_args:
+        - BASE_IMAGE_TAG=latest
+      tags:
+        - ${DRONE_COMMIT_SHA}
+        - latest
+    depends_on:
+      - print setup
   - name: trigger dev deploy
     image: plugins/downstream
     settings:
@@ -64,14 +60,4 @@ steps:
       repositories:
         - UKHomeOffice/digital-form-builder-acp-deploy@main
     depends_on:
-      - build and publish docker tag
-
-services:
-- name: docker
-  image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
-
-- name: anchore-submission-server
-  image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/anchore-submission:latest
-  pull: always
-  commands:
-    - /run.sh server
+      - publish to ecr

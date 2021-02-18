@@ -150,3 +150,5 @@ steps:
         - UKHomeOffice/digital-form-builder-acp-deploy@main
     depends_on:
       - publish to ecr
+depends_on:
+  - code-analyze-check

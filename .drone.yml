@@ -17,6 +17,9 @@ steps:
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
     commands:
       -  bin/env.sh
+      - source .env
+      - sed -e 's|$BASE_IMAGE_TAG|'$XGOV_TAG'|g designer/Dockefile > designer/Dockefile.out
+      - cat designer/Dockefile.out
     depends_on:
       - checkout code from xgov
   - name: print setup
@@ -36,7 +39,7 @@ steps:
       region: eu-west-2
       repo: stp/forms-designer
       registry: 340268328991.dkr.ecr.eu-west-2.amazonaws.com
-      dockerfile: designer/Dockerfile
+      dockerfile: designer/Dockefile.out
       build_args:
         - BASE_IMAGE_TAG=latest
       tags:

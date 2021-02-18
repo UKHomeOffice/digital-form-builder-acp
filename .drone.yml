@@ -7,19 +7,15 @@ trigger:
   event:
     - push
     - tag
-
 steps:
   - name: checkout code from xgov
-  image: alpine/git
-  commands:
-    - git clone https://github.com/XGovFormBuilder/digital-form-builder/
-    - source .env
-    - cd digital-form-builder
-    - git checkout $XGOV_SHA
-    - cd ..
-  volumes:
-    - name: dockerclientconfig
-      path: /root/.docker
+    image: alpine/git
+    commands:
+      - git clone https://github.com/XGovFormBuilder/digital-form-builder/
+      - source .env
+      - cd digital-form-builder
+      - git checkout $XGOV_SHA
+      - cd ..
   - name: dev-run-tests-with-coverage
     pull: if-not-exists
     image: node:12.18.4-buster
@@ -30,9 +26,6 @@ steps:
       - yarn test-cov
     depends_on:
       - checkout code from xgov
-    volumes:
-      - name: dockerclientconfig
-        path: /root/.docker
   - name: sonar_scan
     pull: if-not-exists
     image: quay.digital.homeoffice.gov.uk/ukhomeofficedigital/sonar-scanner-node:6a03c77c7e1bad005893cdcc9cd3d99479b79d5c

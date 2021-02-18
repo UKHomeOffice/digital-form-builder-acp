@@ -18,7 +18,7 @@ steps:
     commands:
       -  bin/env.sh
       - source .env
-      - eval "echo \"$(cat designer/Dockefile)\""
+      - source .env | eval "echo \"$(cat designer\/Dockefile)\""
       - cat designer/Dockefile.out
     depends_on:
       - checkout code from xgov

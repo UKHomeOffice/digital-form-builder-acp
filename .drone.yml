@@ -23,7 +23,7 @@ steps:
     commands:
       - source .env
       - echo "Current XGOV tag $${XGOV_TAG}"
-      - n=0; while [ "$n" -lt 60 ] && [ ! docker stats --no-stream ]; do n=$(( n + 1 )); sleep 1; done
+      - n=0; while [ "$n" -lt 120 ] && [ ! docker stats --no-stream ]; do n=$(( n + 1 )); sleep 1; done
       - aws ecr get-login-password --region $${AWS_REGION} | docker login --username AWS --password-stdin 340268328991.dkr.ecr.$${AWS_REGION}.amazonaws.com | docker build --build-arg BASE_IMAGE_TAG=$${XGOV_TAG} -t stp/forms-designer:$${DRONE_COMMIT_SHA} -t stp/forms-designer:latest designer/. --no-cache
       - docker image push stp/forms-designer:$${DRONE_COMMIT_SHA}
     volumes:

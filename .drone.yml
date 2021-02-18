@@ -26,25 +26,6 @@ steps:
       - env
     depends_on:
       - setup tags
-  - name: publish to ecr
-    image: plugins/ecr
-    settings:
-      access_key:
-        from_secret: DESIGNER_REGISTRY_AWS_ACCESS_KEY_ID
-      secret_key:
-        from_secret: DESIGNER_REGISTRY_AWS_SECRET_ACCESS_KEY
-      region: eu-west-2
-      repo: stp/forms-designer
-      registry: 340268328991.dkr.ecr.eu-west-2.amazonaws.com
-      dockerfile: designer/Dockerfile
-      build_args_from_env: [ BASE_IMAGE_TAG ]
-      build_args:
-        - BASE_IMAGE_TAG=latest
-      tags:
-        - ${DRONE_COMMIT_SHA}
-        - latest
-    depends_on:
-      - print setup
   - name: ecr-login
     pull: if-not-exists
     image: quay.io/ukhomeofficedigital/dind-awscli:19.03.12-dind-1.18.55

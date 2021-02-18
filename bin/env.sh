@@ -3,5 +3,6 @@
 
 source .env
 pwd
-source .env | eval "echo \"$(cat designer/Dockefile)\""
+ls
+source .env | eval "echo \"$(cat digital-form-builder/designer/Dockefile)\""
 exit 1

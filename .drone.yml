@@ -19,11 +19,34 @@ steps:
       -  bin/env.sh
     depends_on:
       - checkout code from xgov
-  - name: print setup
+  - name: ecr-login
     pull: if-not-exists
-    image: node:6
+    image: quay.io/ukhomeofficedigital/dind-awscli:19.03.12-dind-1.18.55
+    environment:
+      AWS_ACCESS_KEY_ID:
+        from_secret: DESIGNER_REGISTRY_AWS_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY:
+        from_secret: DESIGNER_REGISTRY_AWS_SECRET_ACCESS_KEY
+      AWS_REGION: eu-west-2
     commands:
-      - env
+      - n=0; while [ "$n" -lt 60 ] && [ ! docker stats --no-stream ]; do n=$(( n + 1 )); sleep 1; done
+      - aws ecr get-login-password --region $${AWS_REGION} | docker login --username AWS --password-stdin 340268328991.dkr.ecr.$${AWS_REGION}.amazonaws.com
+    volumes:
+      - name: dockerclientconfig
+        path: /root/.docker
+    depends_on:
+      - setup tags
+  - name: build docker tag
+    pull: if-not-exists
+    image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
+    commands:
+      - export BASE_IMAGE_TAG=$(cat .tags)
+      - echo "Using base image  from TAG - $BASE_IMAGE_TAG"
+      - bin/env.sh
+      - docker build --build-arg BASE_IMAGE_TAG=$${BASE_IMAGE_TAG} -t forms-designer:$${DRONE_COMMIT_SHA} -t forms-designer:latest designer/. --no-cache
+    volumes:
+      - name: dockerclientconfig
+        path: /root/.docker
     depends_on:
       - setup tags
   - name: publish
@@ -36,9 +59,7 @@ steps:
         from_secret: DESIGNER_REGISTRY_AWS_SECRET_ACCESS_KEY
       AWS_REGION: eu-west-2
     commands:
-      - bin/env.sh
-      - n=0; while [ "$n" -lt 60 ] && [ ! docker stats --no-stream ]; do n=$(( n + 1 )); sleep 1; done
-      - aws ecr get-login-password --region $${AWS_REGION} | docker login --username AWS --password-stdin 340268328991.dkr.ecr.$${AWS_REGION}.amazonaws.com
+      - echo "Publish"
       - docker build --build-arg BASE_IMAGE_TAG=$${BASE_IMAGE_TAG} -t forms-designer:$${DRONE_COMMIT_SHA} -t forms-designer:latest designer/. --no-cache
       - docker image push 340268328991.dkr.ecr.$${AWS_REGION}.amazonaws.com/stp/forms-designer:$${BASE_IMAGE_TAG}
       - docker image push 340268328991.dkr.ecr.$${AWS_REGION}.amazonaws.com/stp/forms-designer:$${DRONE_COMMIT_SHA}
@@ -47,7 +68,7 @@ steps:
       - name: dockerclientconfig
         path: /root/.docker
     depends_on:
-      - print setup
+      - build docker tag
   - name: trigger dev deploy
     image: plugins/downstream
     settings:

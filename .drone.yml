@@ -57,7 +57,7 @@ steps:
     pull: if-not-exists
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
     commands:
-      - ls -lag bin/
+      - ls -lah bin/
       - bin/designer.sh
     depends_on:
       - checkout code from xgov
@@ -115,7 +115,7 @@ steps:
     pull: if-not-exists
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
     commands:
-      - ls -lag bin/
+      - ls -lah bin/
       - bin/runner.sh
     depends_on:
       - checkout code from xgov

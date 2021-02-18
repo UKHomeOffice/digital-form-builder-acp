@@ -41,7 +41,8 @@ steps:
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
     commands:
       - bin/env.sh
-      - echo "docker build --build-arg BASE_IMAGE_TAG=$BASE_IMAGE_TAG"
+      - source .env
+      - echo "docker build --build-arg BASE_IMAGE_TAG=$${BASE_IMAGE_TAG}"
       - docker build --build-arg BASE_IMAGE_TAG=$${BASE_IMAGE_TAG} -t forms-designer:$${DRONE_COMMIT_SHA} -t forms-designer:latest designer/. --no-cache
     volumes:
       - name: dockerclientconfig

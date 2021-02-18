@@ -28,7 +28,7 @@ steps:
       region: eu-west-2
       repo: stp/forms-designer
       registry: 340268328991.dkr.ecr.eu-west-2.amazonaws.com
-      dockerfile: designer/Dockefile.out
+      dockerfile: designer/Dockerfile.out
       tags:
         - ${DRONE_COMMIT_SHA}
         - latest

@@ -1,4 +1,51 @@
 kind: pipeline
+name: code-analyze-check
+type: kubernetes
+
+trigger:
+  branch: main
+  event:
+    - push
+steps:
+  - name: checkout code from xgov
+      image: alpine/git
+      commands:
+        - git clone https://github.com/XGovFormBuilder/digital-form-builder/
+        - source .env
+        - cd digital-form-builder
+        - git checkout $XGOV_SHA
+        - cd ..
+      volumes:
+        - name: dockerclientconfig
+          path: /root/.docker
+      - name: dev-run-tests-with-coverage
+        pull: if-not-exists
+        image: node:12.18.4-buster
+        commands:
+          - cd digital-form-builder
+          - yarn
+          - yarn build:dependencies
+          - yarn test-cov
+        depends_on:
+          - checkout code from xgov
+        volumes:
+          - name: dockerclientconfig
+            path: /root/.docker
+      - name: sonar_scan
+        pull: if-not-exists
+        image: quay.digital.homeoffice.gov.uk/ukhomeofficedigital/sonar-scanner-node:6a03c77c7e1bad005893cdcc9cd3d99479b79d5c
+        commands:
+          - cp sonar/sonar-project.properties digital-form-builder/
+          - cp sonar/designer-sonar-project.properties digital-form-builder/designer/sonar-project.properties
+          - cp sonar/model-sonar-project.properties digital-form-builder/model/sonar-project.properties
+          - cp sonar/runner-sonar-project.properties digital-form-builder/runner/sonar-project.properties
+          - pwd
+          - ls -lah digital-form-builder/
+          - sonar-scanner -Dsonar.projectVersion=${DRONE_BUILD_NUMBER} -Dsonar.projectBaseDir=digital-form-builder -Dsonar.projectKey=digital-form-builder
+        depends_on:
+          - dev-run-tests-with-coverage
+---
+kind: pipeline
 name: designer
 type: kubernetes
 trigger:
@@ -51,3 +98,5 @@ steps:
         - UKHomeOffice/digital-form-builder-acp-deploy@main
     depends_on:
       - publish to ecr
+depends_on:
+  - code-analyze-check

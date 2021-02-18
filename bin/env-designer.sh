@@ -1,4 +1,4 @@
-#!/usr/bin/env-designer.sh
+#!/usr/bin/env bash
 [[ -z "${DEBUG}" ]] || set -x
 source .env
 export BASE_IMAGE_TAG="$XGOV_TAG"

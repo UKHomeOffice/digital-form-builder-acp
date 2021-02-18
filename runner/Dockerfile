@@ -1,5 +1,5 @@
 ARG BASE_IMAGE_TAG=latest
-FROM ghcr.io/xgovformbuilder/digital-form-builder-designer:$BASE_IMAGE_TAG
+FROM ghcr.io/xgovformbuilder/digital-form-builder-runner:$BASE_IMAGE_TAG
 WORKDIR /usr/src/app
 USER root
 RUN deluser --remove-home appuser && \
@@ -10,4 +10,5 @@ USER appuser
 EXPOSE 3009
 
 USER 1001
-CMD [ "yarn", "designer", "start"]
+CMD [ "yarn", "runner", "start"]
+

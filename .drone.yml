@@ -57,7 +57,7 @@ steps:
     pull: if-not-exists
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
     commands:
-      - bin/env.sh
+      - bin/env-designer.sh
     depends_on:
       - checkout code from xgov
   - name: publish to ecr
@@ -95,3 +95,58 @@ steps:
       - publish to ecr
 depends_on:
   - code-analyze-check
+
+---
+kind: pipeline
+name: runner
+type: kubernetes
+trigger:
+  branch: main
+  event:
+    - push
+    - tag
+steps:
+  - name: checkout code from xgov
+    image: alpine/git
+    commands:
+      - git clone https://github.com/XGovFormBuilder/digital-form-builder/
+  - name: setup tags
+    pull: if-not-exists
+    image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
+    commands:
+      - bin/env-runner.sh
+    depends_on:
+      - checkout code from xgov
+  - name: publish to ecr
+    image: plugins/ecr
+    settings:
+      access_key:
+        from_secret: RUNNER_REGISTRY_AWS_ACCESS_KEY_ID
+      secret_key:
+        from_secret: RUNNER_REGISTRY_AWS_SECRET_ACCESS_KEY
+      region: eu-west-2
+      repo: stp/forms-runner
+      registry: 340268328991.dkr.ecr.eu-west-2.amazonaws.com
+      dockerfile: runner/Dockerfile.out
+      tags:
+        - ${DRONE_COMMIT_SHA}
+        - latest
+    depends_on:
+      - setup tags
+  - name: trigger dev deploy
+    image: plugins/downstream
+    settings:
+      server: https://drone-gh.acp.homeoffice.gov.uk/
+      deploy: development
+      fork: true
+      token:
+        from_secret: downstream-trigger-token
+      params:
+        - SOURCE_HASH=${DRONE_COMMIT_HASH}
+        - APP=digital-form-builder-runner
+        - /drone/src/.env
+      last_successful: true
+      repositories:
+        - UKHomeOffice/digital-form-builder-acp-deploy@main
+    depends_on:
+      - publish to ecr

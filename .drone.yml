@@ -49,18 +49,12 @@ trigger:
     - push
     - tag
 steps:
-  - name: checkout code from xgov
-    image: alpine/git
-    commands:
-      - git clone https://github.com/XGovFormBuilder/digital-form-builder/
   - name: setup tags
     pull: if-not-exists
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
     commands:
       - ls -lah bin/
       - bin/designer.sh
-    depends_on:
-      - checkout code from xgov
   - name: publish to ecr
     image: plugins/ecr
     settings:
@@ -107,18 +101,12 @@ trigger:
     - push
     - tag
 steps:
-  - name: checkout code from xgov
-    image: alpine/git
-    commands:
-      - git clone https://github.com/XGovFormBuilder/digital-form-builder/
   - name: setup tags
     pull: if-not-exists
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
     commands:
       - ls -lah bin/
       - bin/runner.sh
-    depends_on:
-      - checkout code from xgov
   - name: publish to ecr
     image: plugins/ecr
     settings:

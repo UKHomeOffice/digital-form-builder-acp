@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 [[ -z "${DEBUG}" ]] || set -x
 source .env
 source bin/util.sh

@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 [[ -z "${DEBUG}" ]] || set -x
 
 export NC='\e[0m'

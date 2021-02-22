@@ -57,9 +57,6 @@ steps:
       - bin/designer.sh
   - name: publish to ecr
     image: plugins/ecr
-    commands:
-      - source .env
-      - export BASE_IMAGE_TAG="$XGOV_TAG"
     settings:
       access_key:
         from_secret: DESIGNER_REGISTRY_AWS_ACCESS_KEY_ID
@@ -69,10 +66,6 @@ steps:
       repo: stp/forms-designer
       registry: 340268328991.dkr.ecr.eu-west-2.amazonaws.com
       dockerfile: designer/Dockerfile.out
-      tags:
-        - ${DRONE_COMMIT_SHA}
-        - ${BASE_IMAGE_TAG}
-        - latest
     depends_on:
       - setup tags
   - name: trigger dev deploy
@@ -113,9 +106,6 @@ steps:
       - bin/runner.sh
   - name: publish to ecr
     image: plugins/ecr
-    commands:
-      - source .env
-      - export BASE_IMAGE_TAG="$XGOV_TAG"
     settings:
       access_key:
         from_secret: RUNNER_REGISTRY_AWS_ACCESS_KEY_ID
@@ -125,10 +115,6 @@ steps:
       repo: stp/forms-runner
       registry: 340268328991.dkr.ecr.eu-west-2.amazonaws.com
       dockerfile: runner/Dockerfile.out
-      tags:
-        - ${DRONE_COMMIT_SHA}
-        - ${BASE_IMAGE_TAG}
-        - latest
     depends_on:
       - setup tags
   - name: trigger dev deploy

@@ -68,6 +68,7 @@ steps:
       dockerfile: designer/Dockerfile.out
       tags:
         - ${DRONE_COMMIT_SHA}
+        - ${BASE_IMAGE_TAG}
         - latest
     depends_on:
       - setup tags
@@ -120,6 +121,7 @@ steps:
       dockerfile: runner/Dockerfile.out
       tags:
         - ${DRONE_COMMIT_SHA}
+        - ${BASE_IMAGE_TAG}
         - latest
     depends_on:
       - setup tags

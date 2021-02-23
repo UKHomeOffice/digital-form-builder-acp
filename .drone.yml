@@ -68,23 +68,6 @@ steps:
       dockerfile: designer/Dockerfile.out
     depends_on:
       - setup tags
-  - name: trigger dev deploy
-    image: plugins/downstream
-    settings:
-      server: https://drone-gh.acp.homeoffice.gov.uk/
-      deploy: development
-      fork: true
-      token:
-        from_secret: downstream-trigger-token
-      params:
-        - SOURCE_HASH=${DRONE_COMMIT_HASH}
-        - APP=digital-form-builder-designer
-        - /drone/src/.env
-      last_successful: true
-      repositories:
-        - UKHomeOffice/digital-form-builder-acp-deploy@main
-    depends_on:
-      - publish to ecr
 depends_on:
   - code-analyze-check
 
@@ -117,6 +100,19 @@ steps:
       dockerfile: runner/Dockerfile.out
     depends_on:
       - setup tags
+depends_on:
+  - code-analyze-check
+
+---
+kind: pipeline
+name: deploy
+type: kubernetes
+trigger:
+  branch: main
+  event:
+    - push
+    - tag
+steps:
   - name: trigger dev deploy
     image: plugins/downstream
     settings:
@@ -127,12 +123,11 @@ steps:
         from_secret: downstream-trigger-token
       params:
         - SOURCE_HASH=${DRONE_COMMIT_HASH}
-        - APP=digital-form-builder-runner
+        - APP=digital-form-builder-designer
         - /drone/src/.env
       last_successful: true
       repositories:
         - UKHomeOffice/digital-form-builder-acp-deploy@main
-    depends_on:
-      - publish to ecr
 depends_on:
-  - code-analyze-check
+  - designer
+  - runner

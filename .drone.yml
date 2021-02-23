@@ -39,6 +39,33 @@ steps:
       - sonar-scanner -Dsonar.projectVersion=${DRONE_BUILD_NUMBER} -Dsonar.projectBaseDir=digital-form-builder -Dsonar.projectKey=digital-form-builder
     depends_on:
       - dev-run-tests-with-coverage
+  - name: slack-notification-code-check
+    image: plugins/slack
+    settings:
+      webhook:
+        from_secret: slack_webhook
+      channel: stp-formbuilder-alerts
+      template: >
+        {{#success build.status}}
+          Code Analysis succeeded. Good job.
+          Build: {{build.number}}
+          Author: {{build.author}}
+          Link: {{build.link}}
+        {{else}}
+          Code Analysis failed. Fix me please.
+          Build: {{build.number}}
+          Author: {{build.author}}
+          Link: {{build.link}}
+        {{/success}}
+    when:
+      event:
+        - tag
+        - push
+      status:
+        - success
+        - failure
+    depends_on:
+      - sonar_scan
 ---
 kind: pipeline
 name: designer
@@ -68,6 +95,33 @@ steps:
       dockerfile: designer/Dockerfile.out
     depends_on:
       - setup tags
+  - name: slack-notification-designer-tagged
+    image: plugins/slack
+    settings:
+      webhook:
+        from_secret: slack_webhook
+      channel: stp-formbuilder-alerts
+      template: >
+        {{#success build.status}}
+          forms-designer Tagged. Good job.
+          Build: {{build.number}}
+          Author: {{build.author}}
+          Link: {{build.link}}
+        {{else}}
+          forms-designer Tagging failed. Fix me please.
+          Build: {{build.number}}
+          Author: {{build.author}}
+          Link: {{build.link}}
+        {{/success}}
+    when:
+      event:
+        - tag
+        - push
+      status:
+        - success
+        - failure
+    depends_on:
+      - publish to ecr
 depends_on:
   - code-analyze-check
 
@@ -100,6 +154,33 @@ steps:
       dockerfile: runner/Dockerfile.out
     depends_on:
       - setup tags
+  - name: slack-notification-runner-tagged
+    image: plugins/slack
+    settings:
+      webhook:
+        from_secret: slack_webhook
+      channel: stp-formbuilder-alerts
+      template: >
+        {{#success build.status}}
+          forms-runner Tagged. Good job.
+          Build: {{build.number}}
+          Author: {{build.author}}
+          Link: {{build.link}}
+        {{else}}
+          forms-runner Tagging failed. Fix me please.
+          Build: {{build.number}}
+          Author: {{build.author}}
+          Link: {{build.link}}
+        {{/success}}
+    when:
+      event:
+        - tag
+        - push
+      status:
+        - success
+        - failure
+    depends_on:
+      - publish to ecr
 depends_on:
   - code-analyze-check
 

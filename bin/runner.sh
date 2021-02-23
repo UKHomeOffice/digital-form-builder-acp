@@ -5,5 +5,6 @@ source bin/util.sh
 export BASE_IMAGE_TAG="$XGOV_TAG"
 echo "$BASE_IMAGE_TAG"
 eval "echo \"$(cat runner/Dockerfile)\"" > runner/Dockerfile.out
-echo -n "$XGOV_TAG,latest" > .tags
+echo -n "$XGOV_TAG,latest,$DRONE_COMMIT_SHA" > .tags
+echo "RUNNER_TAG=$XGOV_TAG" > .runner
 info "Docker file processed"

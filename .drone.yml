@@ -80,7 +80,6 @@ steps:
     pull: if-not-exists
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
     commands:
-      - ls -lah bin/
       - bin/designer.sh
   - name: publish to ecr
     image: plugins/ecr
@@ -139,7 +138,6 @@ steps:
     pull: if-not-exists
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
     commands:
-      - ls -lah bin/
       - bin/runner.sh
   - name: publish to ecr
     image: plugins/ecr
@@ -204,6 +202,8 @@ steps:
         from_secret: downstream-trigger-token
       params:
         - SOURCE_HASH=${DRONE_COMMIT_HASH}
+        - /drone/src/.designer
+        - /drone/src/.runner
         - /drone/src/.env
       last_successful: true
       repositories:

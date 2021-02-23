@@ -204,7 +204,6 @@ steps:
         from_secret: downstream-trigger-token
       params:
         - SOURCE_HASH=${DRONE_COMMIT_HASH}
-        - APP=digital-form-builder-designer
         - /drone/src/.env
       last_successful: true
       repositories:

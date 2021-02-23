@@ -192,6 +192,11 @@ trigger:
     - push
     - tag
 steps:
+  - name: setup deploy tags
+    image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
+    commands:
+      - bin/runner.sh
+      - bin/designer.sh
   - name: trigger dev deploy
     image: plugins/downstream
     settings:

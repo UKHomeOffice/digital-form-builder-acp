@@ -13,7 +13,7 @@ pwd
 echo "Reading tags"
 cat .tags
 echo
-echo "Reading docker file"
+echo "Reading docker file for designer"
 cat designer/Dockerfile.out
 info "Docker file processed for designer"
 

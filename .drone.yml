@@ -213,6 +213,33 @@ steps:
       last_successful: true
       repositories:
         - UKHomeOffice/digital-form-builder-acp-deploy@main
+  - name: slack-notification-dev-deploy
+    image: plugins/slack
+    settings:
+      webhook:
+        from_secret: slack_webhook
+      channel: stp-formbuilder-alerts
+      template: >
+        {{#success build.status}}
+          Forms dev deployment triggered. Good job.
+          Build: {{build.number}}
+          Author: {{build.author}}
+          Link: {{build.link}}
+        {{else}}
+          Forms dev deployment trigger failed. Fix me please.
+          Build: {{build.number}}
+          Author: {{build.author}}
+          Link: {{build.link}}
+        {{/success}}
+    when:
+      event:
+        - tag
+        - push
+      status:
+        - success
+        - failure
+    depends_on:
+      - trigger dev deploy
 depends_on:
   - designer
   - runner

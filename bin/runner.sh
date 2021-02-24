@@ -8,7 +8,7 @@ sed 's/$BASE_IMAGE_TAG/'"$XGOV_TAG"'/' runner/Dockerfile > runner/Dockerfile.out
 echo -n "$XGOV_TAG,latest,$DRONE_COMMIT_SHA" > .tags
 echo "RUNNER_TAG=$XGOV_TAG" > .runner
 echo
-cat .designer
+cat .runner
 pwd
 echo "Reading tags"
 cat .tags

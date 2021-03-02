@@ -6,7 +6,7 @@ Repo for building the ACP Images for Digital-Form-Builder
 
 The diagram below gives a high level overview of the pipelines for the [XGovFormBuilder/digital-form-builder](https://github.com/XGovFormBuilder/digital-form-builder) for ACP
 
-![Integrated Forms Pipeline](Integrated Forms Pipeline.png)
+![Integrated Forms Pipeline](IntegratedFormsPipeline.png)
 
 
 ## Inner workings

@@ -3,7 +3,7 @@ name: code-analyze-check
 type: kubernetes
 
 trigger:
-  branch: main
+  branch: anchore-scan
   event:
     - tag
     - push
@@ -71,7 +71,7 @@ kind: pipeline
 name: designer
 type: kubernetes
 trigger:
-  branch: main
+  branch: anchore-scan
   event:
     - tag
     - push

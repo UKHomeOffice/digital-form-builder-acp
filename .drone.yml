@@ -93,7 +93,7 @@ steps:
       registry: 340268328991.dkr.ecr.eu-west-2.amazonaws.com
       dockerfile: designer/Dockerfile.out
     depends_on:
-      - publish to ecr
+      - setup tags
   - name: scan-image
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/anchore-submission:latest
     pull: always
@@ -105,7 +105,7 @@ steps:
         - push
         - tag
     depends_on:
-      - setup tags
+      - publish to ecr
   - name: slack-notification-designer-tagged
     image: plugins/slack
     settings:

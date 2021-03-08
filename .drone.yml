@@ -6,6 +6,7 @@ trigger:
   branch: main
   event:
     - tag
+    - push
 steps:
   - name: checkout code from xgov
     image: alpine/git
@@ -73,6 +74,7 @@ trigger:
   branch: main
   event:
     - tag
+    - push
 steps:
   - name: setup tags
     pull: if-not-exists

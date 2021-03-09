@@ -34,8 +34,6 @@ steps:
       - cp sonar/designer-sonar-project.properties digital-form-builder/designer/sonar-project.properties
       - cp sonar/model-sonar-project.properties digital-form-builder/model/sonar-project.properties
       - cp sonar/runner-sonar-project.properties digital-form-builder/runner/sonar-project.properties
-      - pwd
-      - ls -lah digital-form-builder/
       - sonar-scanner -Dsonar.projectVersion=${DRONE_BUILD_NUMBER} -Dsonar.projectBaseDir=digital-form-builder -Dsonar.projectKey=digital-form-builder
     depends_on:
       - dev-run-tests-with-coverage
@@ -94,6 +92,13 @@ steps:
       dockerfile: designer/Dockerfile.out
     depends_on:
       - setup tags
+  - name: check-local-images
+    pull: if-not-exists
+    image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
+    commands:
+      - docker images --filter=reference='*designer*'
+    depends_on:
+      - publish to ecr
   - name: scan-image
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/anchore-submission:latest
     pull: always
@@ -104,7 +109,7 @@ steps:
         - push
         - tag
     depends_on:
-      - publish to ecr
+      - check-local-images
   - name: slack-notification-designer-tagged
     image: plugins/slack
     settings:

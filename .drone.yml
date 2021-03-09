@@ -92,24 +92,36 @@ steps:
       dockerfile: designer/Dockerfile.out
     depends_on:
       - setup tags
+  - name: build docker local image
+    pull: if-not-exists
+    image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
+    commands:
+      - docker build -t stp/forms-designer:${DRONE_COMMIT_SHA} designer/. --no-cache
+    volumes:
+      - name: dockerclientconfig
+        path: /root/.docker
+    depends_on:
+      - setup tags
   - name: check-local-images
     pull: if-not-exists
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
     commands:
       - docker images --filter=reference='*designer*'
     depends_on:
-      - publish to ecr
+      - build docker local image
   - name: scan-image
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/anchore-submission:latest
     pull: always
     environment:
       IMAGE_NAME: stp/forms-designer:${DRONE_COMMIT_SHA}
+      SHOW_ALL_VULNERABILITIES: true
+      TOLERATE: low
     when:
       event:
         - push
         - tag
     depends_on:
-      - check-local-images
+      - build docker local image
   - name: slack-notification-designer-tagged
     image: plugins/slack
     settings:

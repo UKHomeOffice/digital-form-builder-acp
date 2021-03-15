@@ -35,9 +35,8 @@ jobs:
         run: |
           git add .
           git commit -m "$(git -C xgovformbuilder log --format="%H %s" ${{github.event.inputs.sha}})" --author="$(git -C xgovformbuilder log --format="%an <%ae>" ${{github.event.inputs.sha}})"
-          git tag ${{github.event.inputs.tag}}
+          git tag ${github.event.inputs.tag}.$(git tag -l "${github.event.inputs.tag}.*" | wc -l | xargs | awk '{print $1+1}')-acp
           git push --tags origin HEAD
-
       - name: Commit if changes to xgovformbuilder/digital-form-builder master
         if: ${{github.event.inputs.tag == false || github.event.inputs.tag == 'false'}}
         #        run: echo "dummy sha ${{github.event.inputs.sha}}"

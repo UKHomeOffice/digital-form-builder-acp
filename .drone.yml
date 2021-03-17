@@ -46,7 +46,7 @@ steps:
       IMAGE_NAME: stp/forms-designer:${DRONE_COMMIT_SHA}
       DOCKER_HOST: tcp://172.17.0.1:2375
     depends_on:
-      - pull images
+      - pull image
     when:
       branch: anchore-scan
       event:

@@ -20,7 +20,6 @@ steps:
     pull: always
     environment:
       IMAGE_NAME: stp/forms-designer:latest
-      DOCKER_HOST: tcp://172.17.0.1:2375
     depends_on:
       - pull image
     when:
@@ -30,6 +29,9 @@ steps:
 
 
 services:
+  - name: docker
+    image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
+
   - name: anchore-submission-server
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/anchore-submission:latest
     pull: always

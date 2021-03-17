@@ -33,11 +33,24 @@ steps:
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
     commands:
       - docker pull 340268328991.dkr.ecr.eu-west-2.amazonaws.com/stp/forms-designer:latest
+    depends_on:
+      - publish to ecr
+      when:
+        branch: anchore-scan
+        event:
+          - push
   - name: scan-image
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/anchore-submission:latest
     pull: always
     environment:
       IMAGE_NAME: stp/forms-designer:${DRONE_COMMIT_SHA}
+      DOCKER_HOST: tcp://172.17.0.1:2375
+    depends_on:
+      - pull images
+      when:
+        branch: anchore-scan
+        event:
+          - push
 
 
 services:

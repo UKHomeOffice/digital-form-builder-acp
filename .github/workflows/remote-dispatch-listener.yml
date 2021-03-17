@@ -24,7 +24,8 @@ jobs:
       - run: |
           echo "XGOV_REF=${{ github.event.client_payload.ref }}" > .env
           echo "XGOV_SHA=${{github.event.inputs.sha }}" >> .env
-          echo "XGOV_TAG=${{github.event.inputs.tag }}" >> .env
+          XGOV_TAG=${{github.event.inputs.tag}}
+          echo "XGOV_TAG=${XGOV_TAG}.$(git tag -l "$XGOV_TAG.*" | wc -l | xargs | awk '{print $1+1}')-acp" >> .env
       - name: Setup github user
         run: |
           git config user.name github-actions

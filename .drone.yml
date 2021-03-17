@@ -1,78 +1,10 @@
 kind: pipeline
-name: code-analyze-check
-type: kubernetes
-
-trigger:
-  branch: main
-  event:
-    - tag
-steps:
-  - name: checkout code from xgov
-    image: alpine/git
-    commands:
-      - git clone https://github.com/XGovFormBuilder/digital-form-builder/
-      - source .env
-      - cd digital-form-builder
-      - git checkout $XGOV_SHA
-      - cd ..
-  - name: dev-run-tests-with-coverage
-    pull: if-not-exists
-    image: node:12.18.4-buster
-    commands:
-      - cd digital-form-builder
-      - yarn
-      - yarn build:dependencies
-      - yarn test-cov
-    depends_on:
-      - checkout code from xgov
-  - name: sonar_scan
-    pull: if-not-exists
-    image: quay.digital.homeoffice.gov.uk/ukhomeofficedigital/sonar-scanner-node:6a03c77c7e1bad005893cdcc9cd3d99479b79d5c
-    commands:
-      - cp sonar/sonar-project.properties digital-form-builder/
-      - cp sonar/designer-sonar-project.properties digital-form-builder/designer/sonar-project.properties
-      - cp sonar/model-sonar-project.properties digital-form-builder/model/sonar-project.properties
-      - cp sonar/runner-sonar-project.properties digital-form-builder/runner/sonar-project.properties
-      - pwd
-      - ls -lah digital-form-builder/
-      - sonar-scanner -Dsonar.projectVersion=${DRONE_BUILD_NUMBER} -Dsonar.projectBaseDir=digital-form-builder -Dsonar.projectKey=digital-form-builder
-    depends_on:
-      - dev-run-tests-with-coverage
-  - name: slack-notification-code-check
-    image: plugins/slack
-    settings:
-      webhook:
-        from_secret: slack_webhook
-      channel: stp-formbuilder-alerts
-      template: >
-        {{#success build.status}}
-          Code Analysis succeeded. Good job.
-          Build: {{build.number}}
-          Author: {{build.author}}
-          Link: {{build.link}}
-        {{else}}
-          Code Analysis failed. Fix me please.
-          Build: {{build.number}}
-          Author: {{build.author}}
-          Link: {{build.link}}
-        {{/success}}
-    when:
-      event:
-        - tag
-        - push
-      status:
-        - success
-        - failure
-    depends_on:
-      - sonar_scan
----
-kind: pipeline
 name: designer
 type: kubernetes
 trigger:
   branch: anchore-scan
   event:
-    - tag
+    - push
 steps:
   - name: setup tags
     pull: if-not-exists
@@ -106,31 +38,11 @@ steps:
     pull: always
     environment:
       IMAGE_NAME: stp/forms-designer:${DRONE_COMMIT_SHA}
-  - name: slack-notification-designer-tagged
-    image: plugins/slack
-    settings:
-      webhook:
-        from_secret: slack_webhook
-      channel: stp-formbuilder-alerts
-      template: >
-        {{#success build.status}}
-          forms-designer Tagged. Good job.
-          Build: {{build.number}}
-          Author: {{build.author}}
-          Link: {{build.link}}
-        {{else}}
-          forms-designer Tagging failed. Fix me please.
-          Build: {{build.number}}
-          Author: {{build.author}}
-          Link: {{build.link}}
-        {{/success}}
-    when:
-      event:
-        - tag
-      status:
-        - success
-        - failure
-    depends_on:
-      - publish to ecr
-depends_on:
-  - code-analyze-check
+
+
+services:
+  - name: anchore-submission-server
+    image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/anchore-submission:latest
+    pull: always
+    commands:
+      - /run.sh server

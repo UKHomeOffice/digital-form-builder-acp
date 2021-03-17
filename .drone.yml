@@ -3,10 +3,9 @@ name: code-analyze-check
 type: kubernetes
 
 trigger:
-  branch: anchore-scan
+  branch: main
   event:
     - tag
-    - push
 steps:
   - name: checkout code from xgov
     image: alpine/git
@@ -34,6 +33,8 @@ steps:
       - cp sonar/designer-sonar-project.properties digital-form-builder/designer/sonar-project.properties
       - cp sonar/model-sonar-project.properties digital-form-builder/model/sonar-project.properties
       - cp sonar/runner-sonar-project.properties digital-form-builder/runner/sonar-project.properties
+      - pwd
+      - ls -lah digital-form-builder/
       - sonar-scanner -Dsonar.projectVersion=${DRONE_BUILD_NUMBER} -Dsonar.projectBaseDir=digital-form-builder -Dsonar.projectKey=digital-form-builder
     depends_on:
       - dev-run-tests-with-coverage
@@ -72,7 +73,6 @@ trigger:
   branch: anchore-scan
   event:
     - tag
-    - push
 steps:
   - name: setup tags
     pull: if-not-exists
@@ -92,36 +92,20 @@ steps:
       dockerfile: designer/Dockerfile.out
     depends_on:
       - setup tags
-  - name: build docker local image
+    when:
+      branch: anchore-scan
+      event:
+        - push
+  - name: pull image
     pull: if-not-exists
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
     commands:
-      - docker build -t stp/forms-designer:${DRONE_COMMIT_SHA} designer/. --no-cache
-    volumes:
-      - name: dockerclientconfig
-        path: /root/.docker
-    depends_on:
-      - setup tags
-  - name: check-local-images
-    pull: if-not-exists
-    image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
-    commands:
-      - docker images --filter=reference='*designer*'
-    depends_on:
-      - build docker local image
+      - docker pull 340268328991.dkr.ecr.eu-west-2.amazonaws.com/stp/forms-designer:latest
   - name: scan-image
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/anchore-submission:latest
     pull: always
     environment:
       IMAGE_NAME: stp/forms-designer:${DRONE_COMMIT_SHA}
-      SHOW_ALL_VULNERABILITIES: true
-      TOLERATE: low
-    when:
-      event:
-        - push
-        - tag
-    depends_on:
-      - build docker local image
   - name: slack-notification-designer-tagged
     image: plugins/slack
     settings:
@@ -143,7 +127,6 @@ steps:
     when:
       event:
         - tag
-        - push
       status:
         - success
         - failure
@@ -151,130 +134,3 @@ steps:
       - publish to ecr
 depends_on:
   - code-analyze-check
-
-services:
-  - name: docker
-    image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
-
-  - name: anchore-submission-server
-    image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/anchore-submission:latest
-    pull: always
-    commands:
-      - /run.sh server
----
-kind: pipeline
-name: runner
-type: kubernetes
-trigger:
-  branch: main
-  event:
-    - tag
-steps:
-  - name: setup tags
-    pull: if-not-exists
-    image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
-    commands:
-      - bin/runner.sh
-  - name: publish to ecr
-    image: plugins/ecr
-    settings:
-      access_key:
-        from_secret: RUNNER_REGISTRY_AWS_ACCESS_KEY_ID
-      secret_key:
-        from_secret: RUNNER_REGISTRY_AWS_SECRET_ACCESS_KEY
-      region: eu-west-2
-      repo: stp/forms-runner
-      registry: 340268328991.dkr.ecr.eu-west-2.amazonaws.com
-      dockerfile: runner/Dockerfile.out
-    depends_on:
-      - setup tags
-  - name: slack-notification-runner-tagged
-    image: plugins/slack
-    settings:
-      webhook:
-        from_secret: slack_webhook
-      channel: stp-formbuilder-alerts
-      template: >
-        {{#success build.status}}
-          forms-runner Tagged. Good job.
-          Build: {{build.number}}
-          Author: {{build.author}}
-          Link: {{build.link}}
-        {{else}}
-          forms-runner Tagging failed. Fix me please.
-          Build: {{build.number}}
-          Author: {{build.author}}
-          Link: {{build.link}}
-        {{/success}}
-    when:
-      event:
-        - tag
-        - push
-      status:
-        - success
-        - failure
-    depends_on:
-      - publish to ecr
-depends_on:
-  - code-analyze-check
-
----
-kind: pipeline
-name: deploy
-type: kubernetes
-trigger:
-  branch: main
-  event:
-    - tag
-steps:
-  - name: setup deploy tags
-    image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
-    commands:
-      - bin/runner.sh
-      - bin/designer.sh
-  - name: trigger dev deploy
-    image: plugins/downstream
-    settings:
-      server: https://drone-gh.acp.homeoffice.gov.uk/
-      deploy: development
-      fork: true
-      token:
-        from_secret: downstream-trigger-token
-      params:
-        - SOURCE_HASH=${DRONE_COMMIT_HASH}
-        - /drone/src/.designer
-        - /drone/src/.runner
-        - /drone/src/.env
-      last_successful: true
-      repositories:
-        - UKHomeOffice/digital-form-builder-acp-deploy@main
-  - name: slack-notification-dev-deploy
-    image: plugins/slack
-    settings:
-      webhook:
-        from_secret: slack_webhook
-      channel: stp-formbuilder-alerts
-      template: >
-        {{#success build.status}}
-          Forms dev deployment triggered. Good job.
-          Build: {{build.number}}
-          Author: {{build.author}}
-          Link: {{build.link}}
-        {{else}}
-          Forms dev deployment trigger failed. Fix me please.
-          Build: {{build.number}}
-          Author: {{build.author}}
-          Link: {{build.link}}
-        {{/success}}
-    when:
-      event:
-        - tag
-        - push
-      status:
-        - success
-        - failure
-    depends_on:
-      - trigger dev deploy
-depends_on:
-  - designer
-  - runner

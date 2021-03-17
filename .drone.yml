@@ -6,28 +6,6 @@ trigger:
   event:
     - push
 steps:
-  - name: setup tags
-    pull: if-not-exists
-    image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
-    commands:
-      - bin/designer.sh
-  - name: publish to ecr
-    image: plugins/ecr
-    settings:
-      access_key:
-        from_secret: DESIGNER_REGISTRY_AWS_ACCESS_KEY_ID
-      secret_key:
-        from_secret: DESIGNER_REGISTRY_AWS_SECRET_ACCESS_KEY
-      region: eu-west-2
-      repo: stp/forms-designer
-      registry: 340268328991.dkr.ecr.eu-west-2.amazonaws.com
-      dockerfile: designer/Dockerfile.out
-    depends_on:
-      - setup tags
-    when:
-      branch: anchore-scan
-      event:
-        - push
   - name: pull image
     pull: if-not-exists
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
@@ -43,7 +21,7 @@ steps:
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/anchore-submission:latest
     pull: always
     environment:
-      IMAGE_NAME: stp/forms-designer:${DRONE_COMMIT_SHA}
+      IMAGE_NAME: stp/forms-designer:latest
       DOCKER_HOST: tcp://172.17.0.1:2375
     depends_on:
       - pull image

@@ -11,8 +11,6 @@ steps:
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
     commands:
       - docker pull 340268328991.dkr.ecr.eu-west-2.amazonaws.com/stp/forms-designer:latest
-    depends_on:
-      - publish to ecr
     when:
       branch: anchore-scan
       event:

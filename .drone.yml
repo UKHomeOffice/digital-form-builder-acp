@@ -194,6 +194,8 @@ steps:
       - bin/runner.sh
       - bin/designer.sh
   - name: trigger dev deploy
+    depends_on:
+      - setup deploy tags
     image: plugins/downstream
     settings:
       server: https://drone-gh.acp.homeoffice.gov.uk/

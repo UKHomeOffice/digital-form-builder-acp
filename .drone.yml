@@ -3,9 +3,7 @@ name: code-analyze-check
 type: kubernetes
 
 trigger:
-  branch:
-    - main
-    - tagging-for-images
+  branch: main
   event:
     - tag
 steps:
@@ -72,9 +70,7 @@ kind: pipeline
 name: designer
 type: kubernetes
 trigger:
-  branch:
-    - main
-    - tagging-for-images
+  branch: main
   event:
     - tag
 steps:
@@ -131,9 +127,7 @@ kind: pipeline
 name: runner
 type: kubernetes
 trigger:
-  branch:
-    - main
-    - tagging-for-images
+  branch: main
   event:
     - tag
 steps:
@@ -190,9 +184,7 @@ kind: pipeline
 name: deploy
 type: kubernetes
 trigger:
-  branch:
-    - main
-    - tagging-for-images
+  branch: main
   event:
     - tag
 steps:

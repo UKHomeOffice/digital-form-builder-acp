@@ -31,13 +31,9 @@ steps:
     image: quay.digital.homeoffice.gov.uk/ukhomeofficedigital/sonar-scanner-node:6a03c77c7e1bad005893cdcc9cd3d99479b79d5c
     commands:
       - cp sonar/sonar-project.properties digital-form-builder/
-      - sed 's/USER/'"$drone-ci-token"'/' digital-form-builder/sonar-project.properties
-      - cat digital-form-builder/sonar-project.properties
       - cp sonar/designer-sonar-project.properties digital-form-builder/designer/sonar-project.properties
       - cp sonar/model-sonar-project.properties digital-form-builder/model/sonar-project.properties
       - cp sonar/runner-sonar-project.properties digital-form-builder/runner/sonar-project.properties
-      - pwd
-      - ls -lah digital-form-builder/
-      - sonar-scanner -Dsonar.projectVersion=${DRONE_BUILD_NUMBER} -Dsonar.projectBaseDir=digital-form-builder -Dsonar.projectKey=digital-form-builder
+      - sonar-scanner -Dsonar.projectVersion=${DRONE_BUILD_NUMBER} -Dsonar.projectBaseDir=digital-form-builder -Dsonar.projectKey=digital-form-builder -Dsonar.login=${drone-ci-token}
     depends_on:
       - dev-run-tests-with-coverage

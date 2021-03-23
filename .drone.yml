@@ -35,10 +35,6 @@ steps:
     commands:
       - cp sonar/sonar-project.properties digital-form-builder/
       - sh bin/sonar-config.sh
-<<<<<<< HEAD
-=======
-      - cat digital-form-builder/sonar-project.properties
->>>>>>> origin/FORMS-490
       - cp sonar/designer-sonar-project.properties digital-form-builder/designer/sonar-project.properties
       - cp sonar/model-sonar-project.properties digital-form-builder/model/sonar-project.properties
       - cp sonar/runner-sonar-project.properties digital-form-builder/runner/sonar-project.properties

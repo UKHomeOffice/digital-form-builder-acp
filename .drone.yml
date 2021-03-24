@@ -34,12 +34,9 @@ steps:
         from_secret: SONAR_BUILD_TOKEN
     commands:
       - cp sonar/sonar-project.properties digital-form-builder/
-      - sh bin/sonar-config.sh
       - cp sonar/designer-sonar-project.properties digital-form-builder/designer/sonar-project.properties
       - cp sonar/model-sonar-project.properties digital-form-builder/model/sonar-project.properties
       - cp sonar/runner-sonar-project.properties digital-form-builder/runner/sonar-project.properties
-      - pwd
-      - ls -lah digital-form-builder/
       - sonar-scanner -Dsonar.projectVersion=${DRONE_BUILD_NUMBER} -Dsonar.projectBaseDir=digital-form-builder -Dsonar.projectKey=digital-form-builder -Dsonar.buildbreaker.skip=false -Dsonar.login=${SONAR_TOKEN}
     depends_on:
       - dev-run-tests-with-coverage

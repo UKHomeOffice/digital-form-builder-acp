@@ -40,6 +40,6 @@ steps:
       - cp sonar/runner-sonar-project.properties digital-form-builder/runner/sonar-project.properties
       - pwd
       - ls -lah digital-form-builder/
-      - sonar-scanner -Dsonar.projectVersion=${DRONE_BUILD_NUMBER} -Dsonar.projectBaseDir=digital-form-builder -Dsonar.projectKey=digital-form-builder -Dsonar.buildbreaker.skip=false -Dsonar.login=${SONAR_TOKEN}
+      - sonar-scanner -Dsonar.projectVersion=${DRONE_BUILD_NUMBER} -Dsonar.projectBaseDir=digital-form-builder -Dsonar.projectKey=digital-form-builder -Dsonar.buildbreaker.skip=false -Dsonar.login=${SONAR_TOKEN} -Dsonar.verbose=true -X
     depends_on:
       - dev-run-tests-with-coverage

@@ -18,4 +18,3 @@ This action then tags this repo with the same tag as and commits the meta-data i
 There on the metadata in `.env` is used to for extending and building the docker images for ACP.
 
 This pipeline deploys the images in ECR and triggers the dev deployment via [digital-form-builder-acp-deploy](https://github.com/UKHomeOffice/digital-form-builder-acp-deploy)
-

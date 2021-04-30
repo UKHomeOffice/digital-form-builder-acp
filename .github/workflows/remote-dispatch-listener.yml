@@ -46,7 +46,7 @@ jobs:
           git push --tags origin HEAD
         # The tag command will append an acp specific extension to the tag so that ACP can have separate changes not
         # related to the xgov-forms tagging e.g. xgov-forms tag 1.0.3-rc can have separate tag 1.0.3-rc.1-acp
-      - name: Commit if changes to xgovformbuilder/digital-form-builder master
+      - name: Commit if changes to xgovformbuilder/digital-form-builder main
         if: ${{github.event.inputs.tag == false || github.event.inputs.tag == 'false'}}
         #        run: echo "dummy sha ${{github.event.inputs.sha}}"
         run: |

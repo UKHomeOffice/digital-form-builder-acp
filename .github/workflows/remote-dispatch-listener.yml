@@ -28,6 +28,7 @@ jobs:
           repository: XGovFormBuilder/digital-form-builder
           path: xgovformbuilder
       - run: |
+          git fetch --prune --unshallow --tags
           echo "XGOV_REF=${{ github.event.client_payload.ref }}" > .env
           echo "XGOV_SHA=${{github.event.inputs.sha }}" >> .env
           echo "XGOV_TAG=${{github.event.inputs.tag }}" >> .env

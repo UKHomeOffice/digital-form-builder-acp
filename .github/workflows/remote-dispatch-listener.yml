@@ -40,7 +40,7 @@ jobs:
         #        run: echo "dummy tag ${{github.event.inputs.tag}}"
         run: |
           git add .
-          git commit -m "$(git -C xgovformbuilder log --format="%H %s" ${{github.event.inputs.sha}})" --author="$(git -C xgovformbuilder log --format="%an <%ae>" ${{github.event.inputs.sha}})"
+          git commit -m "$(git -C xgovformbuilder rev-list --pretty=oneline --max-count=1 ${{github.event.inputs.sha}})" --author="$(git -C xgovformbuilder rev-list --format="%an <%ae>" --max-count=1 ${{github.event.inputs.sha}} | sed '/^commit/d')"
           git tag ${NEW_ACP_TAG}
           git push --tags origin HEAD
         # The tag command will append an acp specific extension to the tag so that ACP can have separate changes not
@@ -50,5 +50,5 @@ jobs:
         #        run: echo "dummy sha ${{github.event.inputs.sha}}"
         run: |
           git add .
-          git commit -m "$(git -C xgovformbuilder log --format="%H %s" ${{github.event.inputs.sha}})" --author="$(git -C xgovformbuilder log --format="%an <%ae>" ${{github.event.inputs.sha}})"
+          git commit -m "$(git -C xgovformbuilder rev-list --pretty=oneline --max-count=1 ${{github.event.inputs.sha}})" --author="$(git -C xgovformbuilder rev-list --format="%an <%ae>" --max-count=1 ${{github.event.inputs.sha}} | sed '/^commit/d')"
           git push -u

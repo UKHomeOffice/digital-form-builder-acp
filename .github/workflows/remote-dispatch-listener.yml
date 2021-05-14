@@ -11,6 +11,10 @@ on:
       tag:
         required: false
         description: 'The tag that triggered this build'
+      branch:
+        required: false
+        description: 'For debugging'
+        
 
 jobs:
   xgovformbuilder-updated:
